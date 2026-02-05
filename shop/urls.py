@@ -27,11 +27,11 @@ urlpatterns = [
 
     # ================= CART =================
     path('cart/', views.cart_view, name='cart'),
-    path(
-        'cart/remove/<int:item_id>/',
-        views.cart_remove,
-        name='cart_remove'
-    ),
+
+    path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('buy-now/<int:product_id>/', views.buy_now, name='buy_now'),
+
+    path('cart/remove/<int:item_id>/', views.cart_remove, name='cart_remove'),
 
     # ================= CHECKOUT =================
     path('checkout/', views.checkout, name='checkout'),

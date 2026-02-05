@@ -241,8 +241,8 @@ def product_detail(request, slug):
 # ================= CART =================
 
 def cart_view(request):
-    session_key = request.session.session_key
-    items = CartItem.objects.filter(session_key=session_key) if session_key else []
+    session_key = _get_session_key(request)
+    items = CartItem.objects.filter(session_key=session_key)
 
     if request.method == 'POST':
         for key, value in request.POST.items():
@@ -274,97 +274,136 @@ def cart_view(request):
     })
 
 
+@require_POST
 def cart_remove(request, item_id):
-    session_key = request.session.session_key
-    CartItem.objects.filter(
-        id=item_id,
-        session_key=session_key
-    ).delete()
-    return redirect('shop:cart')
+    session_key = _get_session_key(request)
+    CartItem.objects.filter(id=item_id, session_key=session_key).delete()
+    return redirect("shop:cart")
+
 
 
 # ================= CHECKOUT =================
 
 def checkout(request):
+
+    # Ensure session exists
+    if not request.session.session_key:
+        request.session.create()
+
     session_key = request.session.session_key
-    items = CartItem.objects.filter(session_key=session_key)
 
-    if not items.exists():
-        return redirect('shop:product_list')
+    # ================= BUY NOW LOGIC =================
+    buy_now_product_id = request.session.get("buy_now_product_id")
 
-    total = sum(
-        Decimal(item.product.get_display_price()) * item.quantity
-        for item in items
-    )
+    # If user clicked Buy Now
+    if buy_now_product_id:
+        product = get_object_or_404(Product, id=buy_now_product_id)
 
-    if request.method == 'POST':
+        # Create a fake cart-like item list (so template works)
+        items = [{
+            "product": product,
+            "quantity": 1,
+            "size": None,
+            "total_price": Decimal(str(product.get_display_price()))
+        }]
+
+        total = Decimal(str(product.get_display_price()))
+
+    else:
+        # ================= NORMAL CART LOGIC =================
+        items = CartItem.objects.filter(session_key=session_key)
+
+        if not items.exists():
+            return redirect("shop:product_list")
+
+        total = sum(
+            Decimal(str(item.product.get_display_price())) * item.quantity
+            for item in items
+        )
+
+    # ================= ORDER PLACE LOGIC =================
+    if request.method == "POST":
         form = CheckoutForm(request.POST)
+
         if form.is_valid():
             order = form.save(commit=False)
 
             if request.user.is_authenticated:
                 order.user = request.user
 
-            method = request.POST.get('payment_method', 'cod')
+            method = request.POST.get("payment_method", "cod")
             order.payment_method = method
 
             # CARD
-            if method == 'card':
+            if method == "card":
                 order.paid = True
-                order.payment_status = 'COMPLETED'
+                order.payment_status = "COMPLETED"
                 order.payment_details = "Card payment (simulated)"
 
             # CRYPTO
-            elif method == 'crypto':
-                order.crypto_type = request.POST.get('crypto_type')
-                order.crypto_wallet = request.POST.get('crypto_wallet')
-                order.crypto_txn = request.POST.get('crypto_txn')
+            elif method == "crypto":
+                order.crypto_type = request.POST.get("crypto_type")
+                order.crypto_wallet = request.POST.get("crypto_wallet")
+                order.crypto_txn = request.POST.get("crypto_txn")
                 order.paid = True
-                order.payment_status = 'COMPLETED'
+                order.payment_status = "COMPLETED"
                 order.payment_details = "Crypto payment"
 
             # UPI
-            elif method == 'upi':
-                app = request.POST.get('upi_app', 'UPI')
+            elif method == "upi":
+                app = request.POST.get("upi_app", "UPI")
                 order.upi_app = app
                 order.upi_txn = f"SIM-UPI-{app.upper()}"
                 order.paid = True
-                order.payment_status = 'COMPLETED'
+                order.payment_status = "COMPLETED"
                 order.payment_details = f"UPI payment via {app}"
 
             # COD
             else:
                 order.paid = False
-                order.payment_status = 'PENDING'
+                order.payment_status = "PENDING"
                 order.payment_details = "Cash on Delivery"
 
-            # ✅ SAVE ORDER FIRST
+            # SAVE ORDER
             order.save()
 
-            # 🔥 THIS IS THE IMPORTANT ADDITION 🔥
-            for item in items:
+            # ================= SAVE ORDER ITEMS =================
+            # Buy now case
+            if buy_now_product_id:
                 OrderItem.objects.create(
-                order=order,
-                product=item.product,
-                quantity=item.quantity,
-                price=item.product.get_display_price(),
-                size=item.size          # 👟 ADD THIS
+                    order=order,
+                    product=product,
+                    quantity=1,
+                    price=product.get_display_price(),
+                    size=None
                 )
-                
 
-            # CLEAR CART AFTER SAVING ITEMS
-            items.delete()
+                # Clear buy now session after order
+                request.session.pop("buy_now_product_id", None)
+
+            # Normal cart case
+            else:
+                for item in items:
+                    OrderItem.objects.create(
+                        order=order,
+                        product=item.product,
+                        quantity=item.quantity,
+                        price=item.product.get_display_price(),
+                        size=item.size
+                    )
+
+                # Clear cart
+                items.delete()
 
             return redirect(
                 f"{reverse('shop:product_list')}?order=1&paid={'1' if order.paid else '0'}"
             )
 
-    return render(request, 'shop/checkout.html', {
-        'form': CheckoutForm(),
-        'items': items,
-        'total': total,
+    return render(request, "shop/checkout.html", {
+        "form": CheckoutForm(),
+        "items": items,
+        "total": total,
     })
-
 # ================= UPI QR CODE =================
 
 def upi_qr(request):
@@ -673,3 +712,31 @@ def delete_comment(request, comment_id):
     product_slug = comment.product.slug
     comment.delete()
     return redirect("shop:product_detail", slug=product_slug)
+
+def buy_now(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    # Store only in session (NOT in cart table)
+    request.session['buy_now_product_id'] = product.id
+    request.session['buy_now_qty'] = 1
+
+    return redirect('shop:checkout')
+
+
+def add_to_cart(request, product_id):
+    session_key = _get_session_key(request)
+    product = get_object_or_404(Product, id=product_id, available=True)
+
+    item, created = CartItem.objects.get_or_create(
+        session_key=session_key,
+        product=product,
+        size=None
+    )
+
+    if created:
+        item.quantity = 1
+    else:
+        item.quantity += 1
+
+    item.save()
+    return redirect("shop:cart")

@@ -390,9 +390,29 @@ color: #666;
 
 </div>
    
-   <div style="display:flex; gap:14px; margin-top:10px;">
-  <button class="btn btn-primary">🛒 Buy Now</button>
-  <a href="{% url 'shop:product_list' %}" class="btn btn-outline">← Back</a>
+   <div style="display:flex; gap:14px; margin-top:10px; flex-wrap:wrap;">
+
+  <!-- BUY NOW -->
+  <button type="submit"
+          class="btn btn-primary"
+          formaction="{% url 'shop:buy_now' product.id %}"
+          formmethod="post">
+    🛒 Buy Now
+  </button>
+
+  <!-- ADD TO CART -->
+  <button type="submit"
+          class="btn"
+          formaction="{% url 'shop:add_to_cart' product.id %}"
+          formmethod="post">
+    ➕ Add to Cart
+  </button>
+
+  <!-- BACK -->
+  <a href="{% url 'shop:product_list' %}" class="btn btn-outline">
+    ← Back
+  </a>
+
 </div>
 </form>
       
