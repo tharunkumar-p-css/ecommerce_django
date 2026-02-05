@@ -1,0 +1,170 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+body {
+  background: linear-gradient(180deg, #f5f6f6, #eef1f0);
+}
+
+.register-wrapper {
+  max-width: 420px;
+  margin: 90px auto;
+  animation: fadeIn .6s ease;
+}
+
+.register-card {
+  background: #ffffff;
+  padding: 38px 36px 42px;
+  border-radius: 18px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.12);
+  transition: transform .35s ease, box-shadow .35s ease;
+}
+
+.register-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.18);
+}
+
+.register-card h2 {
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.register-card p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 26px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #d5d9d9;
+  font-size: 14px;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #1e6cf0;
+  box-shadow: 0 0 0 4px rgba(30,108,240,0.18);
+}
+
+.register-btn {
+  width: 100%;
+  margin-top: 18px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(180deg, #1e6cf0, #174fb6);
+}
+
+.register-btn:hover {
+  box-shadow: 0 12px 26px rgba(30,108,240,0.45);
+}
+
+.login-link {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.login-link a {
+  color: #1e6cf0;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.error-box {
+  background: #ffecec;
+  color: #b91c1c;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+
+.success-box {
+  background: #ecfdf3;
+  color: #047857;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<div class="register-wrapper">
+  <div class="register-card">
+
+    <h2>Create Account</h2>
+    <p>Join FunnelWeb to start shopping</p>
+
+    <!-- ✅ DJANGO MESSAGES -->
+    {% if messages %}
+      {% for message in messages %}
+        {% if message.tags == "success" %}
+          <div class="success-box">{{ message }}</div>
+        {% else %}
+          <div class="error-box">{{ message }}</div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    <!-- ✅ CORRECT REGISTER ACTION -->
+    <form method="post" action="{% url 'shop:register' %}">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" name="first_name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" name="last_name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" required>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" required>
+      </div>
+
+      <button type="submit" class="register-btn">Create Account</button>
+    </form>
+
+    <div class="login-link">
+      Already have an account?
+      <a href="{% url 'shop:login' %}">Login</a>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

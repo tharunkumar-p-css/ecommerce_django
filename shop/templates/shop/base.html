@@ -1,0 +1,337 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>FUNNELWEB — Modern E-commerce</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- fonts + main CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'shop/style.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <script src="{% static 'shop/main.js' %}" defer></script>
+
+  <style>
+    :root { --accent: #0b6cff; --text-color: #111; }
+    body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:var(--text-color); margin:0; background:#fafafa; }
+    .container { max-width:1100px; margin:0 auto; padding:16px; }
+
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:18px 0; }
+    .brand-row { display:flex; align-items:center; gap:20px; }
+    .logo { font-weight:800; font-size:20px; text-decoration:none; color:var(--text-color); }
+    .search { display:flex; align-items:center; gap:8px; }
+    .search input { padding:10px 12px; border-radius:20px; border:1px solid #e6e6e6; min-width:360px; }
+
+    /* Top nav */
+    .nav-actions { display:flex; align-items:center; gap:12px; }
+    .nav-link { text-decoration:none; color:var(--text-color); font-weight:600; padding:6px 8px; border-radius:8px; }
+    .nav-link:hover { color:var(--accent); }
+
+    .offers-pill {
+      background: linear-gradient(90deg,#fff6f8,#fff2f6);
+      border:1px solid #ffd7e0;
+      color:#b91c1c;
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:800;
+    }
+
+    /* categories dropdown */
+    .dropdown { position:relative; }
+    .dropdown-toggle { background:transparent; border:0; font-weight:700; cursor:pointer; padding:6px 8px; font-size:15px; }
+    .dropdown-menu {
+      position:absolute;
+      right:0;
+      top:calc(100% + 8px);
+      min-width:220px;
+      background:#fff;
+      border-radius:10px;
+      box-shadow:0 10px 30px rgba(11,24,64,0.12);
+      padding:8px 0;
+      display:none;
+      z-index:999;
+    }
+    .dropdown.open .dropdown-menu { display:block; }
+    .dropdown-menu li { list-style:none; }
+    .dropdown-menu a { display:block; padding:10px 14px; color:#222; text-decoration:none; }
+    .dropdown-menu a:hover { background:rgba(11,108,255,0.06); color:var(--accent); }
+
+    /* small screens */
+    @media (max-width:720px) {
+      .search input { min-width:120px; }
+      .dropdown-menu { right:8px; left:8px; min-width:auto; }
+    }
+
+    /* modal / overlays */
+    .modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(11,24,64,0.45); z-index:1000; }
+    .modal.open { display:flex; }
+    .modal-panel { background:#fff; border-radius:12px; padding:18px; max-width:900px; width:92%; box-shadow:0 20px 40px rgba(0,0,0,0.15); }
+
+    .site-footer { margin-top:48px; padding:28px 0; background:transparent; color:#666; }
+    .footer-container { max-width:1100px; margin:0 auto; padding:0 16px; }
+   /* Common nav button style (like Offers) */
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border-radius: 999px; /* pill shape */
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
+/* Login button specific */
+.nav-btn-login {
+  background: #ffffff;
+  color: #1e293b;              /* dark text */
+  border: 1px solid #d0d7de;   /* visible border */
+}
+
+/* Hover (optional but clean) */
+.nav-btn-login:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  text-decoration: none;
+}
+/* ===== COMMON NAV TAB (like Categories) ===== */
+.nav-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #1e293b;
+  text-decoration: none;
+
+  border-radius: 6px;          /* NOT pill */
+  transition: all 0.2s ease;
+}
+
+/* hover like categories */
+.nav-tab:hover {
+  background: #f1f5f9;
+  text-decoration: none;
+}
+
+/* ===== CART UNIQUE STYLE ===== */
+.nav-cart {
+  position: relative;
+  padding-left: 16px;
+}
+
+/* left accent line (unique) */
+.nav-cart::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 16px;
+  background: #1e6cf0;
+  border-radius: 2px;
+}
+/* underline animation (subtle) */
+.nav-cart:hover {
+  color: #1e6cf0;
+}
+/* REMOVE ANY VERTICAL LINE BEFORE CART */
+.nav-cart::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* REMOVE ANY LEFT BORDER / SEPARATOR */
+.nav-cart {
+  border-left: none !important;
+  box-shadow: none;
+}
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: nowrap;   /* 🔴 IMPORTANT */
+  white-space: nowrap;
+}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="topbar container">
+
+      <!-- left: brand + small search -->
+      <div class="brand-row">
+        <a href="{% url 'shop:product_list' %}" class="logo">🛒FUNNELWEB</a>
+
+        <form action="{% url 'shop:product_list' %}" method="get" class="search" role="search" aria-label="Site search">
+          <input name="q" placeholder="Search for shoes, jackets, watches..." value="{{ request.GET.q|default:'' }}" aria-label="Search">
+          <button type="submit" aria-label="Search" class="nav-link" style="border-radius:999px;background:transparent;padding:6px 8px;">🔍</button>
+        </form>
+      </div>
+
+      <!-- right: nav actions (Categories dropdown visible here) -->
+      <nav class="nav-actions" role="navigation" aria-label="Top navigation">
+
+        <!-- Dynamic Categories dropdown -->
+       {% with path=request.path %}
+
+  {% if path == "/" %}
+    <!-- HOME PAGE → SHOW CATEGORIES DROPDOWN -->
+
+    <div class="dropdown" id="top-categories">
+      <button class="dropdown-toggle" id="catToggle">
+        Categories
+      </button>
+
+      <ul class="dropdown-menu" id="categories-menu">
+        <li>
+          <a href="{% url 'shop:product_list' %}">All</a>
+        </li>
+        <!-- JS will inject categories here -->
+      </ul>
+    </div>
+
+  {% else %}
+    <!-- OTHER PAGES → SHOW HOME BUTTON -->
+
+    <a href="{% url 'shop:product_list' %}" class="nav-link">
+      Home
+    </a>
+
+  {% endif %}
+
+{% endwith %}
+
+          
+       {% if user.is_authenticated and not user.is_staff %}
+  <a href="{% url 'shop:cart' %}" class="nav-tab nav-cart">
+    🛒 Cart 
+  </a>
+{% endif %}
+
+        <!-- Offers link -->
+        <a href="{% url 'shop:offers' %}" class="nav-link offers-pill">Offers</a>
+
+        <!-- Account / Login (Cart removed as requested) -->
+        {% if user.is_authenticated %}
+        {% if user.is_authenticated and not user.is_staff %}
+  <a href="{% url 'shop:dashboard' %}" class="nav-tab">Dashboard</a>
+{% endif %}
+
+  {% if user.is_staff %}
+    <a href="{% url 'admin:index' %}" class="nav-link">Admin</a>
+  {% endif %}
+
+  <a href="{% url 'shop:logout' %}" class="nav-link">Logout</a>
+
+{% else %}
+ <a href="{% url 'shop:login' %}" class="nav-btn nav-btn-login">Login</a>
+{% endif %}
+      </nav>
+    </div>
+
+    {# optional full-width hero slot (rendered in specific pages) #}
+    {% block hero %}{% endblock %}
+  </header>
+
+  <main class="container site-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+        <h3 class="brand">FUNNELWEB</h3>
+        <p class="tagline">Modern e-commerce demo — built with Django</p>
+
+        <div class="footer-links" style="display:flex;gap:12px;margin-top:8px;">
+            <a href="#" style="position:relative;left:440px">Shipping</a>
+            <a href="#"style="position:relative;left:450px">Returns</a>
+            <a href="mailto:support@desphixs.example"style="position:relative;left:460px">Contact</a>
+        </div>
+
+        <p class="footer-copy" style="margin-top:12px;">© FUNNELWEB — All rights reserved</p>
+    </div>
+  </footer>
+
+  <!-- Modal quick view -->
+  <div id="quick-view" class="modal" aria-hidden="true">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Product quick view">
+      <button class="modal-close" data-close aria-label="Close" style="float:right;background:transparent;border:0;font-size:18px;cursor:pointer;">✕</button>
+      <div id="quick-view-content"></div>
+    </div>
+  </div>
+
+  <div id="page-overlay" class="overlay" data-close></div>
+
+  <!-- JS: dynamic categories loader -->
+  <script>
+  (function(){
+    const toggle = document.getElementById('catToggle');
+    const wrapper = document.getElementById('top-categories');
+    const menu = document.getElementById('categories-menu');
+    if (!toggle || !wrapper || !menu) return;
+
+    function addItem(name, url) {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = url;
+      a.textContent = name;
+      a.style.display = 'block';
+      a.style.padding = '10px 14px';
+      a.style.color = '#222';
+      a.style.textDecoration = 'none';
+      li.appendChild(a);
+      menu.appendChild(li);
+    }
+
+    let loaded = false;
+
+    toggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      wrapper.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', wrapper.classList.contains('open'));
+
+      if (loaded) return;
+      fetch('{% url "shop:api_categories" %}')
+        .then(resp => {
+          if (!resp.ok) throw new Error('Network response not ok');
+          return resp.json();
+        })
+        .then(data => {
+          if (data && Array.isArray(data.categories)) {
+            data.categories.forEach(function(cat){
+              addItem(cat.name, cat.url);
+            });
+          }
+          loaded = true;
+        })
+        .catch(err => {
+          console.warn('Could not load categories:', err);
+          loaded = true;
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!wrapper.contains(e.target)) {
+        wrapper.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        wrapper.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+/* ================= SUCCESS ANIMATION ================= */
+.payment-success {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.success-box {
+  background: #fff;
+  padding: 40px 50px;
+  border-radius: 18px;
+  text-align: center;
+  animation: scaleIn 0.35s ease;
+}
+
+/* Circle */
+.checkmark {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid #22c55e;
+  margin: 0 auto 18px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ✔ Tick (FIXED & CENTERED) */
+.checkmark span {
+  width: 18px;
+  height: 36px;
+  border-right: 4px solid #22c55e;
+  border-bottom: 4px solid #22c55e;
+  transform: rotate(45deg) scale(0);
+  animation: tickPop 0.35s ease forwards;
+  animation-delay: 0.25s;
+}
+
+@keyframes tickPop {
+  to {
+    transform: rotate(45deg) scale(1);
+  }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.7); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+</style>
+
+<h2 style="margin-bottom:16px;">Checkout</h2>
+
+<form id="checkout-form" method="post" novalidate>
+{% csrf_token %}
+{{ form.as_p }}
+
+<fieldset>
+<legend>Payment</legend>
+
+<label><input type="radio" name="payment_method" value="card" checked> Card</label>
+&nbsp;
+<label><input type="radio" name="payment_method" value="cod"> COD</label>
+&nbsp;
+<label><input type="radio" name="payment_method" value="crypto"> Crypto</label>
+&nbsp;
+<label><input type="radio" name="payment_method" value="upi"> UPI</label>
+
+<!-- CARD -->
+<div id="card-fields" style="margin-top:12px;">
+  <input type="text" placeholder="4242 4242 4242 4242"
+    style="width:320px;padding:8px;border:1px solid #ddd;">
+</div>
+
+<!-- CRYPTO -->
+<div id="crypto-fields" style="display:none;margin-top:12px;">
+  <select name="crypto_type" style="width:320px;padding:8px;">
+    <option value="BTC">Bitcoin</option>
+    <option value="ETH">Ethereum</option>
+    <option value="USDT">USDT</option>
+  </select><br><br>
+  <input name="crypto_wallet" placeholder="Wallet address"
+    style="width:320px;padding:8px;"><br><br>
+  <input name="crypto_txn" placeholder="Transaction hash"
+    style="width:320px;padding:8px;">
+</div>
+
+<!-- UPI -->
+<div id="upi-fields" style="display:none;margin-top:12px;">
+  <p><strong>Select UPI App</strong></p>
+  <button type="button" class="upi-btn" data-app="GPay">GPay</button>
+  <button type="button" class="upi-btn" data-app="PhonePe">PhonePe</button>
+  <button type="button" class="upi-btn" data-app="Paytm">Paytm</button>
+
+  <div id="upi-qr" style="display:none;margin-top:14px;">
+    <p>Scan & Pay ₹{{ total }}</p>
+    <img src="{% url 'shop:upi_qr' %}?amount={{ total }}" width="180">
+  </div>
+
+  <input type="hidden" name="upi_app" id="upi_app">
+</div>
+
+</fieldset>
+
+<button type="button" id="pay-btn" class="btn btn-primary" style="margin-top:16px;">
+Pay
+</button>
+</form>
+
+<!-- ================= SUCCESS OVERLAY ================= -->
+<div class="payment-success" id="successBox">
+  <div class="success-box">
+    <div class="checkmark">
+      <span></span>
+    </div>
+    <h2>Payment Successful</h2>
+    <p>Thank you for your purchase</p>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const form = document.getElementById('checkout-form');
+  const successBox = document.getElementById('successBox');
+
+  const card = document.getElementById('card-fields');
+  const crypto = document.getElementById('crypto-fields');
+  const upi = document.getElementById('upi-fields');
+  const qr = document.getElementById('upi-qr');
+  const upiApp = document.getElementById('upi_app');
+
+  function toggle() {
+    const v = document.querySelector('input[name="payment_method"]:checked').value;
+    card.style.display = v === 'card' ? 'block' : 'none';
+    crypto.style.display = v === 'crypto' ? 'block' : 'none';
+    upi.style.display = v === 'upi' ? 'block' : 'none';
+  }
+
+  document.querySelectorAll('input[name="payment_method"]').forEach(r =>
+    r.addEventListener('change', toggle)
+  );
+  toggle();
+
+  document.querySelectorAll('.upi-btn').forEach(btn => {
+    btn.onclick = () => {
+      upiApp.value = btn.dataset.app;
+      qr.style.display = 'block';
+    };
+  });
+
+  document.getElementById('pay-btn').onclick = () => {
+    const method = document.querySelector('input[name="payment_method"]:checked').value;
+
+    if (method === 'cod') {
+      form.submit();
+      return;
+    }
+
+    successBox.style.display = 'flex';
+
+    setTimeout(() => {
+      form.submit();
+    }, 1800);
+  };
+
+});
+</script>
+
+{% endblock %}

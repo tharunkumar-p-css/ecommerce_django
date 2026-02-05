@@ -1,0 +1,329 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* ================= HERO ================= */
+.ctas {
+  display:flex;
+  align-items:center;
+  gap:20px;
+  flex-wrap:wrap;
+  margin-top:16px;
+}
+
+.inline-filter label {
+  font-weight:600;
+  font-size:14px;
+}
+
+.inline-filter select {
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid #ddd;
+  background:#fff;
+  cursor:pointer;
+}
+
+/* ================= MOVING OFFER ADS ================= */
+.offer-wrapper {
+  margin: 20px 0 30px;
+  overflow: hidden;
+  position: relative;
+}
+
+.offer-slider {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  animation: slideOffers 28s linear infinite;
+}
+
+.offer-wrapper:hover .offer-slider {
+  animation-play-state: paused;
+}
+
+@keyframes slideOffers {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.offer-card {
+  min-width: 520px;
+  background: linear-gradient(135deg,#111827,#1f2933);
+  color: #fff;
+  border-radius: 18px;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,.35);
+}
+
+.offer-badge {
+  background: linear-gradient(90deg,#facc15,#f97316);
+  color:#000;
+  font-size:12px;
+  font-weight:800;
+  padding:5px 12px;
+  border-radius:999px;
+}
+
+.offer-left h2 {
+  font-size:22px;
+  font-weight:800;
+  margin:6px 0 4px;
+}
+
+.offer-left p {
+  font-size:14px;
+  color:#d1d5db;
+}
+
+.offer-countdown {
+  font-size:13px;
+  font-weight:600;
+  color:#fcd34d;
+}
+
+.offer-right {
+  font-size:48px;
+  opacity:.9;
+}
+
+/* ================= PRODUCTS ================= */
+.product-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:30px;
+  margin-top:30px;
+}
+
+.product-card {
+  background:#fff;
+  padding:16px;
+  border-radius:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,.06);
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  transition:.25s ease;
+}
+
+.product-card:hover {
+  transform:translateY(-4px);
+  box-shadow:0 18px 36px rgba(0,0,0,.12);
+}
+
+.product-card img {
+  width:100%;
+  height:210px;
+  object-fit:contain;
+  margin-bottom:10px;
+}
+
+/* ================= BADGES ================= */
+.offer-chip {
+  position:absolute;
+  top:12px;
+  left:12px;
+  background:#dc2626;
+  color:#fff;
+  font-size:9px;
+  font-weight:700;
+  padding:4px 8px;
+  border-radius:6px;
+}
+
+.trending-chip {
+  position:absolute;
+  top:12px;
+  right:12px;
+  background:#111827;
+  color:#fff;
+  font-size:11px;
+  padding:4px 8px;
+  border-radius:999px;
+}
+
+/* ================= PRICE ================= */
+.price-row {
+  margin:6px 0;
+}
+
+.price {
+  font-size:18px;
+  font-weight:800;
+}
+
+.old-price {
+  text-decoration:line-through;
+  color:#777;
+  margin-left:8px;
+}
+
+/* ================= VIEW BUTTON ================= */
+.view-btn {
+  margin-top:auto;
+  display:block;
+  width:100%;
+  background:#2563eb;
+  color:#fff;
+  text-align:center;
+  padding:10px 0;
+  border-radius:10px;
+  font-weight:700;
+  text-decoration:none;
+}
+
+.view-btn:hover {
+  background:#1d4ed8;
+}
+
+/* ================= OFFER PAGE BANNER ================= */
+.offers-banner {
+  background:#fff4f6;
+  border:1px solid #ffc8d4;
+  padding:12px;
+  border-radius:8px;
+  font-weight:700;
+  color:#b91c1c;
+  margin-bottom:16px;
+}
+</style>
+
+<div class="container">
+
+  <!-- ORDER MESSAGE -->
+  {% if order_placed %}
+    <div style="background:#e6ffed;border:1px solid #10b981;padding:12px;border-radius:6px;margin-bottom:14px;">
+      ✅ Order placed successfully
+    </div>
+  {% endif %}
+
+  <!-- MOVING OFFER ADS -->
+  {% if offer_ads %}
+  <div class="offer-wrapper">
+    <div class="offer-slider">
+
+      {% for ad in offer_ads %}
+      <div class="offer-card">
+        <div class="offer-left">
+          <span class="offer-badge">🔥 LIMITED OFFER</span>
+          <h2>{{ ad.title }}</h2>
+          <p>{{ ad.subtitle }}</p>
+          {% if ad.end_date %}
+            <div class="offer-countdown" data-end="{{ ad.end_date|date:'Y-m-d H:i:s' }}"></div>
+          {% endif %}
+        </div>
+        <div class="offer-right">🎁</div>
+      </div>
+      {% endfor %}
+
+      {# duplicate for infinite scroll #}
+      {% for ad in offer_ads %}
+      <div class="offer-card">
+        <div class="offer-left">
+          <span class="offer-badge">🔥 LIMITED OFFER</span>
+          <h2>{{ ad.title }}</h2>
+          <p>{{ ad.subtitle }}</p>
+          {% if ad.end_date %}
+            <div class="offer-countdown" data-end="{{ ad.end_date|date:'Y-m-d H:i:s' }}"></div>
+          {% endif %}
+        </div>
+        <div class="offer-right">🎁</div>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+  {% endif %}
+
+  {% if offers_page %}
+    <div class="offers-banner">🔥 Showing OFFER products</div>
+  {% endif %}
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Drop-dead comfortable products.<br>Built for everyday.</h1>
+    <p>Explore latest drops, exclusive deals & handpicked styles.</p>
+
+    <div class="ctas">
+      <a href="{% url 'shop:product_list' %}" class="btn">Shop Now</a>
+      <a href="?sort=new" class="btn btn-secondary">New Arrivals</a>
+
+      <div class="inline-filter">
+        <label>Filter</label>
+        <form method="get">
+          <select name="sort" onchange="this.form.submit()">
+            <option value="">Recommended</option>
+            <option value="price_asc">Low to High</option>
+            <option value="price_desc">High to Low</option>
+            <option value="new">Newest</option>
+          </select>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <div class="product-grid">
+    {% for product in products %}
+    <div class="product-card">
+
+      {% if product.has_offer %}
+        <div class="offer-chip">OFFER</div>
+      {% endif %}
+
+      {% if forloop.counter|divisibleby:4 %}
+        <div class="trending-chip">🔥 Trending</div>
+      {% endif %}
+
+      {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+      {% else %}
+        <img src="{% static 'shop/placeholder.png' %}">
+      {% endif %}
+
+      <h3>{{ product.name }}</h3>
+
+      <div class="price-row">
+        {% if product.has_offer %}
+          <span class="price" style="color:#dc2626;">₹{{ product.get_display_price }}</span>
+          <span class="old-price">₹{{ product.price }}</span>
+        {% else %}
+          <span class="price">₹{{ product.price }}</span>
+        {% endif %}
+      </div>
+
+      <a href="{{ product.get_absolute_url }}" class="view-btn">View</a>
+
+    </div>
+    {% empty %}
+      <p>No products found.</p>
+    {% endfor %}
+  </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.offer-countdown').forEach(el => {
+  const end = new Date(el.dataset.end).getTime();
+  function tick(){
+    const diff = end - Date.now();
+    if(diff <= 0){
+      el.innerHTML = "⏰ Deal ended";
+      return;
+    }
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff / (1000*60*60)) % 24);
+    const m = Math.floor((diff / (1000*60)) % 60);
+    el.innerHTML = ⏳ Ends in ${d}d ${h}h ${m}m;
+  }
+  tick();
+  setInterval(tick, 60000);
+});
+</script>
+
+{% endblock %}

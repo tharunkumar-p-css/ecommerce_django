@@ -1,0 +1,219 @@
+{% extends "shop/base.html" %}
+{% block content %}
+
+<style>
+.orders-wrap {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+
+.order-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.order-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-id { font-weight: 700; font-size: 16px; }
+.order-date { color: #6b7280; font-size: 13px; }
+
+.status {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* STATUS COLORS */
+.pending { background:#fee2e2; color:#991b1b; }
+.shipped { background:#e0f2fe; color:#075985; }
+.completed { background:#dcfce7; color:#166534; }
+.cancelled { background:#fef3c7; color:#92400e; }
+.return_requested { background:#e0e7ff; color:#3730a3; }
+.returned { background:#ede9fe; color:#5b21b6; }
+.refunded { background:#cffafe; color:#155e75; }
+.exchange_requested { background:#cffafe; color:#155e75; }
+.exchanged { background:#ecfeff; color:#0f766e; }
+
+.actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 7px 14px;
+  font-size: 13px;
+  border-radius: 6px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-cancel { background:#dc2626; color:#fff; }
+.btn-return { background:#2563eb; color:#fff; }
+.btn-exchange { background:#059669; color:#fff; }
+
+.btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.days-left {
+  font-size: 12px;
+  color: #2563eb;
+}
+
+/* POPUPS */
+.popup-overlay {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  z-index:1000;
+}
+
+.popup-box {
+  background:#fff;
+  width:400px;
+  margin:120px auto;
+  padding:20px;
+  border-radius:10px;
+}
+</style>
+
+<div class="orders-wrap">
+  <h2>My Orders</h2>
+
+  {% for order in orders %}
+  <div class="order-card">
+
+    <div class="order-head">
+      <div>
+        <div class="order-id">Order #{{ order.id }}</div>
+        <div class="order-date">{{ order.created_at|date:"d M Y" }}</div>
+      </div>
+
+      <div class="status {{ order.order_status|lower }}">
+        {{ order.order_status }}
+      </div>
+    </div>
+
+    <ul>
+      {% for item in order.items.all %}
+        <li>{{ item.product.name }}</li>
+      {% endfor %}
+    </ul>
+
+    <div class="actions">
+
+      <!-- CANCEL -->
+      {% if order.order_status == 'PENDING' %}
+      <form method="post" action="{% url 'shop:cancel_order' order.id %}">
+        {% csrf_token %}
+        <button class="btn btn-cancel">Cancel Order</button>
+      </form>
+      {% endif %}
+
+      <!-- RETURN + EXCHANGE -->
+      {% if order.order_status == 'COMPLETED' %}
+        {% if order.can_return %}
+          <button type="button"
+                  class="btn btn-return"
+                  onclick="openReturn('{{ order.id }}')">
+            Return Order
+          </button>
+
+          <button type="button"
+                  class="btn btn-exchange"
+                  onclick="openExchange('{{ order.id }}')">
+            Exchange Order
+          </button>
+
+          <div class="days-left">
+            {{ order.return_days_left }} day{{ order.return_days_left|pluralize }} left
+          </div>
+        {% else %}
+          <button class="btn btn-return btn-disabled" disabled>
+            Return / Exchange Expired
+          </button>
+        {% endif %}
+      {% endif %}
+
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- RETURN POPUP -->
+<div id="returnPopup" class="popup-overlay">
+  <div class="popup-box">
+    <h3>Return Order</h3>
+    <form method="post" id="returnForm">
+      {% csrf_token %}
+      <textarea name="reason" required
+                placeholder="Reason for return"
+                style="width:100%;height:80px;"></textarea>
+      <div style="margin-top:14px;text-align:right;">
+        <button type="button" onclick="closeAll()">Cancel</button>
+        <button type="submit" class="btn btn-return">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- EXCHANGE POPUP -->
+<div id="exchangePopup" class="popup-overlay">
+  <div class="popup-box">
+    <h3>Exchange Order</h3>
+    <form method="post" id="exchangeForm">
+      {% csrf_token %}
+      <textarea name="reason" required
+                placeholder="Reason for exchange"
+                style="width:100%;height:60px;"></textarea>
+
+      <input type="text" name="new_product" required
+             placeholder="New product (size / color / model)"
+             style="width:100%;margin-top:10px;">
+
+      <div style="margin-top:14px;text-align:right;">
+        <button type="button" onclick="closeAll()">Cancel</button>
+        <button type="submit" class="btn btn-exchange">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openReturn(orderId) {
+  var popup = document.getElementById("returnPopup");
+  var form = document.getElementById("returnForm");
+
+  form.action = "/order/" + orderId + "/return/";
+  popup.style.display = "block";
+}
+
+function openExchange(orderId) {
+  var popup = document.getElementById("exchangePopup");
+  var form = document.getElementById("exchangeForm");
+
+  form.action = "/order/" + orderId + "/exchange/";
+  popup.style.display = "block";
+}
+
+function closeAll() {
+  document.getElementById("returnPopup").style.display = "none";
+  document.getElementById("exchangePopup").style.display = "none";
+}
+</script>
+{% endblock %}

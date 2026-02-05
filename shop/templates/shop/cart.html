@@ -1,0 +1,120 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+
+<h2 style="margin-bottom:18px;">Your Cart</h2>
+
+{% if not items %}
+  <p class="muted">Your cart is empty.</p>
+  <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Continue Shopping</a>
+{% else %}
+<form method="post" action="{% url 'shop:cart' %}">
+  {% csrf_token %}
+
+  <table class="cart-table" style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+    <thead>
+      <tr style="background:#f6f6f6; text-align:left;">
+        <th style="padding:12px;">Product</th>
+        <th style="padding:12px; text-align:center; width:100px;">Qty</th>
+        <th style="padding:12px; text-align:center; width:160px;">Price</th>
+        <th style="padding:12px; text-align:center; width:160px;">Total</th>
+        <th style="padding:12px; text-align:center; width:80px;">Remove</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for item in items %}
+        <tr style="border-bottom:1px solid #eee;">
+          <td style="padding:12px; vertical-align:middle;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width:68px;height:68px;object-fit:cover;border-radius:6px;">
+              {% else %}
+                <div style="width:68px;height:68px;background:#fafafa;border:1px solid #eee;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#999;">No image</div>
+              {% endif %}
+
+              <div>
+                <strong style="display:block;font-size:15px;">{{ item.product.name }}</strong>
+                {% if item.product.category %}
+                  <small class="muted">{{ item.product.category.name }}</small>
+                {% endif %}
+              </div>
+            </div>
+            <div>
+  <strong style="display:block;font-size:15px;">
+    {{ item.product.name }}
+  </strong>
+
+  {% if item.size %}
+    <small style="display:block;color:#2563eb;">
+      Size: {{ item.size }}
+    </small>
+  {% endif %}
+
+  {% if item.product.category %}
+    <small class="muted">{{ item.product.category.name }}</small>
+  {% endif %}
+</div>
+          </td>
+
+          <td style="padding:12px; text-align:center; vertical-align:middle;">
+            <input type="number"
+                   name="qty_{{ item.id }}"
+                   value="{{ item.quantity }}"
+                   min="0"
+                   style="width:64px; padding:6px; border:1px solid #ddd; border-radius:6px;">
+          </td>
+
+          <td style="padding:12px; text-align:center; vertical-align:middle;">
+            {% if item.product.has_offer %}
+              <div style="font-weight:800;">₹{{ item.product.get_display_price }}</div>
+              <div style="font-size:13px;color:#777;text-decoration:line-through;">₹{{ item.product.price }}</div>
+            {% else %}
+              <div style="font-weight:800;">₹{{ item.product.get_display_price }}</div>
+            {% endif %}
+          </td>
+
+          <td style="padding:12px; text-align:center; vertical-align:middle; font-weight:800;">
+            ₹{{ item.total_price }}
+          </td>
+
+          <td style="padding:12px; text-align:center; vertical-align:middle;">
+            <!-- Remove form: POSTs to cart_remove view -->
+            <form method="post" action="{% url 'shop:cart_remove' item.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit"
+                      class="btn"
+                      style="background:transparent;border:0;font-size:18px;cursor:pointer;"
+                      onclick="return confirm('Remove \"{{ item.product.name }}\" from cart?');"
+                      title="Remove item">❌</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="cart-actions" style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+    <div class="cart-total" style="font-size:20px; font-weight:800;">
+      Total: ₹{{ total }}
+    </div>
+
+    <div style="display:flex; gap:10px; align-items:center;">
+      <a href="{% url 'shop:product_list' %}" class="btn">← Continue Shopping</a>
+      <button type="submit" class="btn" title="Update cart quantities">Add to cart</button>
+      <div class="cart-actions">
+  {% if user.is_staff %}
+    <p style="color:#b91c1c; font-weight:600; margin-top:12px;">
+      🔒 Admin accounts cannot place orders or proceed to checkout.
+    </p>
+  {% else %}
+    <a href="{% url 'shop:checkout' %}" class="btn btn-primary">
+      Checkout
+    </a>
+  {% endif %}
+</div>
+    </div>
+  </div>
+</form>
+{% endif %}
+
+{% endblock %}

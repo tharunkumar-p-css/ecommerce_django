@@ -1,0 +1,16 @@
+{% for item in items %}
+<div class="cart-item">
+  {% if item.product.image %}
+    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+  {% else %}
+    <div style="width:64px;height:64px;background:#eee;border-radius:8px"></div>
+  {% endif %}
+  <div class="cart-item-meta">
+    <div>{{ item.product.name }}</div>
+    <div class="muted">₹{{ item.product.price }} × {{ item.quantity }}</div>
+  </div>
+  <div class="cart-item-total">₹{{ item.total_price }}</div>
+</div>
+{% empty %}
+<p class="muted">Your cart is empty.</p>
+{% endfor %}
