@@ -283,7 +283,7 @@ def cart_remove(request, item_id):
 
 
 # ================= CHECKOUT =================
-
+@login_required(login_url="shop:login")
 def checkout(request):
 
     # Ensure session exists
@@ -713,6 +713,8 @@ def delete_comment(request, comment_id):
     comment.delete()
     return redirect("shop:product_detail", slug=product_slug)
 
+
+@login_required(login_url="shop:login")
 def buy_now(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
@@ -723,7 +725,11 @@ def buy_now(request, product_id):
     return redirect('shop:checkout')
 
 
+
+@require_POST
+@login_required(login_url="shop:login")
 def add_to_cart(request, product_id):
+
     session_key = _get_session_key(request)
     product = get_object_or_404(Product, id=product_id, available=True)
 
