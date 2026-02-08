@@ -1,0 +1,395 @@
+{% extends "shop/base.html" %}
+{% block content %}
+
+<style>
+.terms-wrap{
+  max-width: 1100px;
+  margin: 28px auto 70px;
+  padding: 0 16px;
+}
+
+/* HERO */
+.terms-hero{
+  border-radius: 22px;
+  padding: 42px 34px;
+  background: radial-gradient(circle at top left, rgba(11,108,255,.25), transparent 55%),
+              radial-gradient(circle at bottom right, rgba(255,122,0,.20), transparent 55%),
+              linear-gradient(135deg,#0f172a,#111827,#1e293b);
+  color: white;
+  box-shadow: 0 22px 55px rgba(0,0,0,.22);
+  position: relative;
+  overflow: hidden;
+}
+
+.terms-hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: url("https://www.transparenttextures.com/patterns/cubes.png");
+  opacity: .06;
+  pointer-events:none;
+}
+
+.terms-hero h1{
+  font-size: 40px;
+  font-weight: 1000;
+  margin: 0 0 12px;
+  letter-spacing: -1px;
+}
+
+.terms-hero p{
+  margin: 0;
+  max-width: 850px;
+  font-size: 15px;
+  color: rgba(255,255,255,.82);
+  line-height: 1.8;
+}
+
+.hero-meta{
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.meta-pill{
+  font-size: 12px;
+  font-weight: 900;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.9);
+  backdrop-filter: blur(8px);
+}
+
+/* GRID */
+.terms-grid{
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 18px;
+  align-items: start;
+}
+
+@media(max-width: 980px){
+  .terms-grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* CARD */
+.card{
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.07);
+  overflow: hidden;
+}
+
+.card-head{
+  padding: 16px 18px;
+  border-bottom: 1px solid #eef2f7;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg,#f8fafc,#ffffff);
+}
+
+.card-head h2{
+  margin: 0;
+  font-size: 15px;
+  font-weight: 1000;
+  color: #0f172a;
+}
+
+.badge{
+  font-size: 12px;
+  font-weight: 900;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg,#dbeafe,#ecfeff);
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.card-body{
+  padding: 18px;
+}
+
+.section{
+  padding: 14px 0;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.section:last-child{
+  border-bottom: none;
+}
+
+.section h3{
+  margin: 0;
+  font-size: 16px;
+  font-weight: 1000;
+  color: #0f172a;
+}
+
+.section p{
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.85;
+}
+
+.section ul{
+  margin: 10px 0 0;
+  padding-left: 18px;
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.85;
+}
+
+/* SIDEBAR */
+.sidebar{
+  position: sticky;
+  top: 18px;
+}
+
+.quick-box{
+  padding: 18px;
+}
+
+.quick-title{
+  font-weight: 1000;
+  color: #0f172a;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.quick-list{
+  display: grid;
+  gap: 10px;
+}
+
+.quick-item{
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  background: #fbfdff;
+}
+
+.quick-icon{
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 900;
+  background: linear-gradient(135deg,#eff6ff,#ffffff);
+  border: 1px solid #dbeafe;
+}
+
+.quick-text{
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.support-box{
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  background: linear-gradient(135deg,#0f172a,#1e293b);
+  color: white;
+  box-shadow: 0 18px 35px rgba(0,0,0,.14);
+}
+
+.support-box h4{
+  margin: 0 0 8px;
+  font-weight: 1000;
+  font-size: 15px;
+}
+
+.support-box p{
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255,255,255,.8);
+  line-height: 1.7;
+}
+
+.support-box a{
+  display: inline-block;
+  margin-top: 10px;
+  text-decoration: none;
+  font-weight: 1000;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: white;
+  color: #0f172a;
+}
+
+.support-box a:hover{
+  background: #e2e8f0;
+}
+</style>
+
+<div class="terms-wrap">
+
+  <!-- HERO -->
+  <div class="terms-hero">
+    <h1>Terms & Conditions</h1>
+    <p>
+      These terms explain how FUNNELWEB works, what users can do on the website,
+      and how orders, payments, and data are handled in this project.
+    </p>
+
+    <div class="hero-meta">
+      <span class="meta-pill">🔒 Secure Checkout UI</span>
+      <span class="meta-pill">🛒 Cart + Orders System</span>
+      <span class="meta-pill">⚡ Django Powered</span>
+      <span class="meta-pill">📦 COD / UPI / Card (Demo)</span>
+    </div>
+  </div>
+
+  <div class="terms-grid">
+
+    <!-- MAIN TERMS -->
+    <section class="card">
+      <div class="card-head">
+        <h2>Website Terms</h2>
+        <span class="badge">Last Updated: Feb 2026</span>
+      </div>
+
+      <div class="card-body">
+
+        <div class="section">
+          <h3>1. Website Usage</h3>
+          <p>
+            FUNNELWEB is a modern e-commerce demo project built using Django.
+            Users can explore categories, search products, view product details,
+            and experience a professional checkout flow.
+          </p>
+        </div>
+
+        <div class="section">
+          <h3>2. User Accounts & Login</h3>
+          <p>
+            Users can browse products without logging in.
+            However, placing orders, accessing the cart, and checkout requires login.
+          </p>
+        </div>
+
+        <div class="section">
+          <h3>3. Orders & Checkout</h3>
+          <p>
+            During checkout, users must provide correct shipping details.
+            Incorrect details may cause delivery failure in a real system.
+          </p>
+        </div>
+
+        <div class="section">
+          <h3>4. Payment Methods</h3>
+          <p>
+            The payment options displayed are part of the UI experience.
+            This project supports multiple payment selections for learning:
+          </p>
+          <ul>
+            <li>💳 Card Payment (UI demo)</li>
+            <li>📦 Cash on Delivery (COD)</li>
+            <li>🪙 UPI Payment with QR Scan</li>
+            <li>🧾 Crypto option (UI demo)</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h3>5. Product & Pricing</h3>
+          <p>
+            Product images, names, and pricing are shown for demonstration.
+            Admin has the right to update products and offers anytime.
+          </p>
+        </div>
+
+        <div class="section">
+          <h3>6. Admin Controls</h3>
+          <p>
+            Admin users have access to product management, offers,
+            order tracking, and customer details through the admin dashboard.
+          </p>
+        </div>
+
+        <div class="section">
+          <h3>7. Privacy & Security</h3>
+          <p>
+            User details are stored only for order processing.
+            FUNNELWEB does not sell or share user information with third parties.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Quick Highlights</h2>
+          <span class="badge">Project</span>
+        </div>
+
+        <div class="quick-box">
+          <div class="quick-list">
+
+            <div class="quick-item">
+              <div class="quick-icon">🛍</div>
+              <div class="quick-text">
+                Premium product listing + category dropdown system.
+              </div>
+            </div>
+
+            <div class="quick-item">
+              <div class="quick-icon">⚡</div>
+              <div class="quick-text">
+                Fast UI with modern cards, sticky summary, and clean layout.
+              </div>
+            </div>
+
+            <div class="quick-item">
+              <div class="quick-icon">🔐</div>
+              <div class="quick-text">
+                Login required for buying products and checkout access.
+              </div>
+            </div>
+
+            <div class="quick-item">
+              <div class="quick-icon">📦</div>
+              <div class="quick-text">
+                Cart system with quantity updates and order summary.
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="support-box">
+        <h4>Need Help?</h4>
+        <p>
+          If you have any issues while using FUNNELWEB,
+          please contact us from the contact page.
+        </p>
+        <a href="{% url 'shop:contact' %}">Go to Contact</a>
+      </div>
+
+    </aside>
+
+  </div>
+
+</div>
+
+{% endblock %}

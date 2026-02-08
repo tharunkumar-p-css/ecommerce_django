@@ -3,175 +3,581 @@
 {% block content %}
 
 <style>
-/* ================= SUCCESS ANIMATION ================= */
-.payment-success {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
+/* FORCE OVERRIDE */
+.checkout-wrap *{
+  box-sizing: border-box !important;
 }
 
-.success-box {
-  background: #fff;
-  padding: 40px 50px;
-  border-radius: 18px;
-  text-align: center;
-  animation: scaleIn 0.35s ease;
+/* PAGE */
+.checkout-wrap{
+  max-width: 1200px !important;
+  margin: 26px auto 60px !important;
+  padding: 0 16px !important;
 }
 
-/* Circle */
-.checkmark {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 4px solid #22c55e;
-  margin: 0 auto 18px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.checkout-title{
+  font-size: 32px !important;
+  font-weight: 1000 !important;
+  margin-bottom: 18px !important;
+  letter-spacing: -0.8px !important;
+  color: #0f172a !important;
 }
 
-/* ✔ Tick (FIXED & CENTERED) */
-.checkmark span {
-  width: 18px;
-  height: 36px;
-  border-right: 4px solid #22c55e;
-  border-bottom: 4px solid #22c55e;
-  transform: rotate(45deg) scale(0);
-  animation: tickPop 0.35s ease forwards;
-  animation-delay: 0.25s;
+/* GRID */
+.checkout-grid{
+  display: grid !important;
+  grid-template-columns: 1.55fr 0.95fr !important;
+  gap: 22px !important;
+  align-items: start !important;
 }
 
-@keyframes tickPop {
-  to {
-    transform: rotate(45deg) scale(1);
+@media(max-width: 980px){
+  .checkout-grid{
+    grid-template-columns: 1fr !important;
   }
 }
 
-@keyframes scaleIn {
-  from { transform: scale(0.7); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+/* CARD */
+.card{
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 18px !important;
+  box-shadow: 0 10px 35px rgba(0,0,0,.08) !important;
+  overflow: hidden !important;
 }
+
+.card-header{
+  padding: 16px 18px !important;
+  border-bottom: 1px solid #eef2f7 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  background: linear-gradient(135deg,#f8fafc,#ffffff) !important;
+}
+
+.card-header h3{
+  margin: 0 !important;
+  font-size: 15px !important;
+  font-weight: 1000 !important;
+  color: #0f172a !important;
+}
+
+.badge{
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  padding: 6px 12px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg,#dbeafe,#ecfeff) !important;
+  color: #0369a1 !important;
+  border: 1px solid #bae6fd !important;
+}
+
+.card-body{
+  padding: 18px !important;
+}
+
+/* FORM */
+.form-grid{
+  display: grid !important;
+  gap: 14px !important;
+}
+
+.row-2{
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 14px !important;
+}
+
+@media(max-width: 640px){
+  .row-2{
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.field label{
+  display: block !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  margin-bottom: 6px !important;
+  color: #0f172a !important;
+}
+
+.field input,
+.field textarea,
+.field select{
+  width: 100% !important;
+  padding: 12px 14px !important;
+  border-radius: 14px !important;
+  border: 1px solid #e5e7eb !important;
+  outline: none !important;
+  font-size: 14px !important;
+  background: #fbfdff !important;
+  transition: 0.2s ease !important;
+}
+
+.field textarea{
+  min-height: 95px !important;
+  resize: vertical !important;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus{
+  border-color: #60a5fa !important;
+  box-shadow: 0 0 0 4px rgba(59,130,246,.15) !important;
+}
+
+/* PAYMENT OPTIONS */
+.pay-grid{
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+}
+
+@media(max-width: 560px){
+  .pay-grid{
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.pay-option{
+  border: 1px solid #e5e7eb !important;
+  border-radius: 16px !important;
+  padding: 12px 12px !important;
+  background: #fff !important;
+  cursor: pointer !important;
+  transition: 0.2s ease !important;
+  display: flex !important;
+  gap: 10px !important;
+  align-items: flex-start !important;
+}
+
+.pay-option:hover{
+  transform: translateY(-1px) !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,.08) !important;
+}
+
+.pay-option input{
+  margin-top: 4px !important;
+  transform: scale(1.1) !important;
+}
+
+.pay-title{
+  font-weight: 1000 !important;
+  font-size: 14px !important;
+  color: #0f172a !important;
+  margin-bottom: 2px !important;
+}
+
+.pay-sub{
+  font-size: 12px !important;
+  color: #64748b !important;
+  line-height: 1.35 !important;
+}
+
+.pay-option.selected{
+  border-color: #60a5fa !important;
+  background: linear-gradient(135deg,#eff6ff,#ffffff) !important;
+}
+
+/* PAYMENT DETAILS BOX */
+.pay-details{
+  margin-top: 14px !important;
+  border: 1px dashed #cbd5e1 !important;
+  border-radius: 16px !important;
+  padding: 14px !important;
+  background: #f8fafc !important;
+}
+
+/* UPI */
+.upi-row{
+  display: flex !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  margin-top: 10px !important;
+}
+
+.upi-btn{
+  border: 1px solid #e5e7eb !important;
+  background: #fff !important;
+  padding: 10px 14px !important;
+  border-radius: 999px !important;
+  font-weight: 1000 !important;
+  cursor: pointer !important;
+  transition: 0.2s ease !important;
+  font-size: 13px !important;
+}
+
+.upi-btn:hover{
+  transform: translateY(-1px) !important;
+  box-shadow: 0 10px 20px rgba(0,0,0,.10) !important;
+}
+
+.upi-btn.active{
+  border-color: #22c55e !important;
+  background: linear-gradient(135deg,#dcfce7,#ffffff) !important;
+}
+
+/* SUMMARY */
+.summary{
+  position: sticky !important;
+  top: 18px !important;
+}
+
+.summary-item{
+  display: flex !important;
+  gap: 12px !important;
+  padding: 14px 0 !important;
+  border-bottom: 1px solid #eef2f7 !important;
+}
+
+.item-img{
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 14px !important;
+  border: 1px solid #eef2f7 !important;
+  object-fit: cover !important;
+}
+
+.item-name{
+  font-weight: 1000 !important;
+  font-size: 14px !important;
+  margin: 0 !important;
+}
+
+.item-meta{
+  font-size: 12px !important;
+  color: #64748b !important;
+}
+
+.price{
+  margin-left: auto !important;
+  font-weight: 1000 !important;
+  color: #0f172a !important;
+}
+
+/* TOTAL */
+.totals{
+  margin-top: 14px !important;
+  padding-top: 14px !important;
+  border-top: 1px solid #eef2f7 !important;
+}
+
+.line{
+  display: flex !important;
+  justify-content: space-between !important;
+  font-size: 13px !important;
+  margin-bottom: 8px !important;
+  color: #334155 !important;
+}
+
+.total-line{
+  font-size: 18px !important;
+  font-weight: 1000 !important;
+  color: #0f172a !important;
+  margin-top: 10px !important;
+}
+
+/* PAY BUTTON */
+.pay-btn{
+  width: 100% !important;
+  margin-top: 16px !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 14px 16px !important;
+  border-radius: 16px !important;
+  font-weight: 1000 !important;
+  font-size: 15px !important;
+  color: #fff !important;
+  background: linear-gradient(135deg,#111827,#334155) !important;
+  transition: 0.2s ease !important;
+}
+
+.pay-btn:hover{
+  transform: translateY(-1px) !important;
+  box-shadow: 0 14px 28px rgba(0,0,0,.18) !important;
+}
+
+.note{
+  margin-top: 10px !important;
+  font-size: 12px !important;
+  color: #64748b !important;
+  text-align: center !important;
+}
+/* MAKE ADDRESS SMALL */
+#id_address{
+  min-height: 70px !important;
+  height: 70px !important;
+  resize: none !important;
+}
+
 </style>
 
-<h2 style="margin-bottom:16px;">Checkout</h2>
+<div class="checkout-wrap">
+  <div class="checkout-title">Checkout</div>
 
-<form id="checkout-form" method="post" novalidate>
-{% csrf_token %}
-{{ form.as_p }}
+  <form id="checkout-form" method="post" novalidate>
+    {% csrf_token %}
 
-<fieldset>
-<legend>Payment</legend>
+    <div class="checkout-grid">
 
-<label><input type="radio" name="payment_method" value="card" checked> Card</label>
-&nbsp;
-<label><input type="radio" name="payment_method" value="cod"> COD</label>
-&nbsp;
-<label><input type="radio" name="payment_method" value="crypto"> Crypto</label>
-&nbsp;
-<label><input type="radio" name="payment_method" value="upi"> UPI</label>
+      <!-- LEFT -->
+      <div>
 
-<!-- CARD -->
-<div id="card-fields" style="margin-top:12px;">
-  <input type="text" placeholder="4242 4242 4242 4242"
-    style="width:320px;padding:8px;border:1px solid #ddd;">
-</div>
+        <section class="card">
+          <div class="card-header">
+            <h3>Shipping Details</h3>
+            <span class="badge">Fast Delivery</span>
+          </div>
 
-<!-- CRYPTO -->
-<div id="crypto-fields" style="display:none;margin-top:12px;">
-  <select name="crypto_type" style="width:320px;padding:8px;">
-    <option value="BTC">Bitcoin</option>
-    <option value="ETH">Ethereum</option>
-    <option value="USDT">USDT</option>
-  </select><br><br>
-  <input name="crypto_wallet" placeholder="Wallet address"
-    style="width:320px;padding:8px;"><br><br>
-  <input name="crypto_txn" placeholder="Transaction hash"
-    style="width:320px;padding:8px;">
-</div>
+          <div class="card-body">
+            <div class="form-grid">
 
-<!-- UPI -->
-<div id="upi-fields" style="display:none;margin-top:12px;">
-  <p><strong>Select UPI App</strong></p>
-  <button type="button" class="upi-btn" data-app="GPay">GPay</button>
-  <button type="button" class="upi-btn" data-app="PhonePe">PhonePe</button>
-  <button type="button" class="upi-btn" data-app="Paytm">Paytm</button>
+              <div class="row-2">
+                <div class="field">
+                  <label>Name</label>
+                  {{ form.name }}
+                </div>
 
-  <div id="upi-qr" style="display:none;margin-top:14px;">
-    <p>Scan & Pay ₹{{ total }}</p>
-    <img src="{% url 'shop:upi_qr' %}?amount={{ total }}" width="180">
-  </div>
+                <div class="field">
+                  <label>Email</label>
+                  {{ form.email }}
+                </div>
+              </div>
 
-  <input type="hidden" name="upi_app" id="upi_app">
-</div>
+             <div class="field">
+                <label>Address</label>
+                {{ form.address }}
+              </div>
 
-</fieldset>
+            </div>
+          </div>
+        </section>
 
-<button type="button" id="pay-btn" class="btn btn-primary" style="margin-top:16px;">
-Pay
-</button>
-</form>
+        <section class="card" style="margin-top:16px;">
+          <div class="card-header">
+            <h3>Payment Method</h3>
+            <span class="badge">100% Secure</span>
+          </div>
 
-<!-- ================= SUCCESS OVERLAY ================= -->
-<div class="payment-success" id="successBox">
-  <div class="success-box">
-    <div class="checkmark">
-      <span></span>
+          <div class="card-body">
+
+            <div class="pay-grid">
+
+              <label class="pay-option" id="pay-card">
+                <input type="radio" name="payment_method" value="card" checked>
+                <div>
+                  <div class="pay-title">💳 Card</div>
+                  <div class="pay-sub">Visa / Mastercard / RuPay supported</div>
+                </div>
+              </label>
+
+              <label class="pay-option" id="pay-cod">
+                <input type="radio" name="payment_method" value="cod">
+                <div>
+                  <div class="pay-title">📦 Cash on Delivery</div>
+                  <div class="pay-sub">Pay after delivery</div>
+                </div>
+              </label>
+
+              <label class="pay-option" id="pay-upi">
+                <input type="radio" name="payment_method" value="upi">
+                <div>
+                  <div class="pay-title">🪙 UPI</div>
+                  <div class="pay-sub">GPay / PhonePe / Paytm supported</div>
+                </div>
+              </label>
+
+              <label class="pay-option" id="pay-crypto">
+                <input type="radio" name="payment_method" value="crypto">
+                <div>
+                  <div class="pay-title">🪙 Crypto</div>
+                  <div class="pay-sub">BTC / ETH / USDT supported</div>
+                </div>
+              </label>
+
+            </div>
+
+            <div class="pay-details">
+
+              <div id="card-fields">
+                <div class="field">
+                  <label>Card Number</label>
+                  <input type="text" placeholder="4242 4242 4242 4242">
+                </div>
+              </div>
+
+              <div id="crypto-fields" style="display:none;">
+                <div class="field">
+                  <label>Crypto Type</label>
+                  <select name="crypto_type">
+                    <option value="BTC">Bitcoin</option>
+                    <option value="ETH">Ethereum</option>
+                    <option value="USDT">USDT</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label>Wallet Address</label>
+                  <input name="crypto_wallet" placeholder="Wallet address">
+                </div>
+
+                <div class="field">
+                  <label>Transaction Hash</label>
+                  <input name="crypto_txn" placeholder="Transaction hash">
+                </div>
+              </div>
+
+              <div id="upi-fields" style="display:none;">
+                <div style="font-weight:1000;margin-bottom:6px;">Choose UPI App</div>
+
+                <div class="upi-row">
+                  <button type="button" class="upi-btn" data-app="GPay">GPay</button>
+                  <button type="button" class="upi-btn" data-app="PhonePe">PhonePe</button>
+                  <button type="button" class="upi-btn" data-app="Paytm">Paytm</button>
+                </div>
+
+                <div id="upi-qr" style="display:none;margin-top:14px;">
+                  <div style="font-weight:1000;margin-bottom:10px;">
+                    Scan & Pay ₹{{ total }}
+                  </div>
+
+                  <img src="{% url 'shop:upi_qr' %}?amount={{ total }}"
+                       width="180"
+                       style="border-radius:16px;border:1px solid #e5e7eb;background:#fff;padding:10px;">
+                </div>
+
+                <input type="hidden" name="upi_app" id="upi_app">
+              </div>
+
+              <div id="cod-fields" style="display:none;">
+                <div style="font-size:13px;color:#64748b;line-height:1.6;">
+                  You will pay in cash when the product is delivered.
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT -->
+      <aside class="card summary">
+        <div class="card-header">
+          <h3>Order Summary</h3>
+          <span class="badge" style="background:linear-gradient(135deg,#dcfce7,#f0fdf4);color:#166534;border:1px solid #bbf7d0;">
+            Secure
+          </span>
+        </div>
+
+        <div class="card-body">
+
+          {% for item in items %}
+          <div class="summary-item">
+            {% if item.product.image %}
+              <img class="item-img" src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+            {% else %}
+              <img class="item-img" src="{% static 'shop/placeholder.png' %}" alt="No image">
+            {% endif %}
+
+            <div>
+              <p class="item-name">{{ item.product.name }}</p>
+              <div class="item-meta">
+                Qty: {{ item.quantity }}
+              </div>
+            </div>
+
+            <div class="price">₹{{ item.total_price }}</div>
+          </div>
+          {% endfor %}
+
+          <div class="totals">
+            <div class="line">
+              <span>Subtotal</span>
+              <span>₹{{ total }}</span>
+            </div>
+            <div class="line">
+              <span>Delivery</span>
+              <span style="font-weight:1000;color:#16a34a;">FREE</span>
+            </div>
+            <div class="line">
+              <span>Tax</span>
+              <span>₹0</span>
+            </div>
+
+            <div class="line total-line">
+              <span>Total</span>
+              <span>₹{{ total }}</span>
+            </div>
+
+            <button type="submit" id="pay-btn" class="pay-btn">
+              Pay ₹{{ total }}
+            </button>
+
+            <div class="note">
+              🔒 Your payment is encrypted and protected.
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
     </div>
-    <h2>Payment Successful</h2>
-    <p>Thank you for your purchase</p>
-  </div>
+  </form>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
 
-  const form = document.getElementById('checkout-form');
-  const successBox = document.getElementById('successBox');
+  const cardFields = document.getElementById("card-fields");
+  const codFields = document.getElementById("cod-fields");
+  const cryptoFields = document.getElementById("crypto-fields");
+  const upiFields = document.getElementById("upi-fields");
 
-  const card = document.getElementById('card-fields');
-  const crypto = document.getElementById('crypto-fields');
-  const upi = document.getElementById('upi-fields');
-  const qr = document.getElementById('upi-qr');
-  const upiApp = document.getElementById('upi_app');
+  const upiQr = document.getElementById("upi-qr");
+  const upiApp = document.getElementById("upi_app");
 
-  function toggle() {
-    const v = document.querySelector('input[name="payment_method"]:checked').value;
-    card.style.display = v === 'card' ? 'block' : 'none';
-    crypto.style.display = v === 'crypto' ? 'block' : 'none';
-    upi.style.display = v === 'upi' ? 'block' : 'none';
+  const payOptions = document.querySelectorAll(".pay-option");
+  const radios = document.querySelectorAll('input[name="payment_method"]');
+
+  function setSelectedCard(){
+    payOptions.forEach(opt => opt.classList.remove("selected"));
+    const checked = document.querySelector('input[name="payment_method"]:checked');
+    if (!checked) return;
+    checked.closest(".pay-option").classList.add("selected");
   }
 
-  document.querySelectorAll('input[name="payment_method"]').forEach(r =>
-    r.addEventListener('change', toggle)
-  );
-  toggle();
-
-  document.querySelectorAll('.upi-btn').forEach(btn => {
-    btn.onclick = () => {
-      upiApp.value = btn.dataset.app;
-      qr.style.display = 'block';
-    };
-  });
-
-  document.getElementById('pay-btn').onclick = () => {
+  function togglePaymentFields(){
     const method = document.querySelector('input[name="payment_method"]:checked').value;
 
-    if (method === 'cod') {
-      form.submit();
-      return;
+    cardFields.style.display = method === "card" ? "block" : "none";
+    codFields.style.display = method === "cod" ? "block" : "none";
+    cryptoFields.style.display = method === "crypto" ? "block" : "none";
+    upiFields.style.display = method === "upi" ? "block" : "none";
+
+    if(method !== "upi"){
+      upiQr.style.display = "none";
+      upiApp.value = "";
+      document.querySelectorAll(".upi-btn").forEach(b => b.classList.remove("active"));
     }
 
-    successBox.style.display = 'flex';
+    setSelectedCard();
+  }
 
-    setTimeout(() => {
-      form.submit();
-    }, 1800);
-  };
+  radios.forEach(r => r.addEventListener("change", togglePaymentFields));
+  togglePaymentFields();
+
+  document.querySelectorAll(".upi-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".upi-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      upiApp.value = btn.dataset.app;
+      upiQr.style.display = "block";
+    });
+  });
 
 });
 </script>

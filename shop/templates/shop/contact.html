@@ -1,0 +1,257 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+.contact-wrap{
+  max-width: 1100px;
+  margin: 30px auto 60px;
+  padding: 0 16px;
+}
+
+.contact-hero{
+  background: linear-gradient(135deg,#0f172a,#1e293b,#0b6cff);
+  border-radius: 22px;
+  padding: 40px 28px;
+  color: white;
+  box-shadow: 0 18px 45px rgba(0,0,0,.18);
+}
+
+.contact-hero h1{
+  font-size: 38px;
+  font-weight: 1000;
+  margin: 0 0 10px;
+}
+
+.contact-hero p{
+  margin: 0;
+  font-size: 15px;
+  color: rgba(255,255,255,.85);
+  max-width: 800px;
+  line-height: 1.7;
+}
+
+.contact-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 22px;
+}
+
+@media(max-width: 900px){
+  .contact-grid{ grid-template-columns: 1fr; }
+}
+
+.contact-card{
+  background: white;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  padding: 20px 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.07);
+}
+
+.contact-card h3{
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 1000;
+  color: #0f172a;
+}
+
+.contact-card p{
+  margin: 0;
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.info-list{
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.info-list li{
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid #eef2f7;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #334155;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: linear-gradient(135deg,#ffffff,#f8fafc);
+}
+
+.icon{
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  flex-shrink: 0;
+}
+
+/* Contact Form */
+.form{
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.field label{
+  font-size: 13px;
+  font-weight: 900;
+  color: #0f172a;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.field input,
+.field textarea{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  outline: none;
+  font-size: 14px;
+  background: #fbfdff;
+  transition: 0.2s ease;
+}
+
+.field textarea{
+  min-height: 110px;
+  resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus{
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 4px rgba(59,130,246,.15);
+}
+
+.send-btn{
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  border-radius: 16px;
+  font-weight: 1000;
+  font-size: 15px;
+  color: #fff;
+  background: linear-gradient(135deg,#111827,#334155);
+  transition: 0.2s ease;
+}
+
+.send-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(0,0,0,.18);
+}
+
+.note{
+  margin-top: 10px;
+  font-size: 12px;
+  color: #64748b;
+  text-align: center;
+}
+</style>
+
+<div class="contact-wrap">
+
+  <div class="contact-hero">
+    <h1>Contact FUNNELWEB</h1>
+    <p>
+      Need help with your order, payment, or product details?  
+      Feel free to contact us anytime — we usually respond within 24 hours.
+    </p>
+  </div>
+
+  <div class="contact-grid">
+
+    <!-- LEFT: Contact Info -->
+    <div class="contact-card">
+      <h3>📌 Contact Information</h3>
+      <p>
+        You can reach us using the details below.  
+        For quick support, email is recommended.
+      </p>
+
+      <ul class="info-list">
+        <li>
+          <div class="icon">📧</div>
+          <div>
+            <b>Email</b><br>
+           funnelweb@gmail.com
+          </div>
+        </li>
+
+        <li>
+          <div class="icon">📞</div>
+          <div>
+            <b>Phone</b><br>
+            +91 6578903490
+          </div>
+        </li>
+
+        <li>
+          <div class="icon">📍</div>
+          <div>
+            <b>Location</b><br>
+            Arcot, Tamil Nadu, India
+          </div>
+        </li>
+
+        <li>
+          <div class="icon">⏰</div>
+          <div>
+            <b>Support Hours</b><br>
+            Mon – Sat: 9AM to 8PM
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- RIGHT: Contact Form -->
+    <div class="contact-card">
+      <h3>✉ Send us a message</h3>
+      <p>
+        Fill the form below and we will get back to you soon.
+      </p>
+
+      <form class="form" method="post">
+        {% csrf_token %}
+
+        <div class="field">
+          <label>Your Name</label>
+          <input type="text" name="name" placeholder="Enter your name" required>
+        </div>
+
+        <div class="field">
+          <label>Your Email</label>
+          <input type="email" name="email" placeholder="Enter your email" required>
+        </div>
+
+        <div class="field">
+          <label>Message</label>
+          <textarea name="message" placeholder="Type your message..." required></textarea>
+        </div>
+
+        <button type="submit" class="send-btn">
+          Send Message
+        </button>
+
+        <div class="note">
+          🔒 Your message is safe and will not be shared.
+        </div>
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
+
+{% endblock %}

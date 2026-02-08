@@ -160,6 +160,22 @@
   flex-wrap: nowrap;   /* 🔴 IMPORTANT */
   white-space: nowrap;
 }
+
+/* Footer links - remove underline */
+.site-footer a,
+.site-footer a:visited {
+  text-decoration: none !important;
+  color: #64748b !important;
+  font-weight: 600;
+}
+
+.site-footer a:hover {
+  color: #0b6cff !important;
+  text-decoration: none !important;
+}
+
+
+  
   </style>
 </head>
 <body>
@@ -250,10 +266,15 @@
         <h3 class="brand">FUNNELWEB</h3>
         <p class="tagline">Modern e-commerce demo — built with Django</p>
 
+        
+
         <div class="footer-links" style="display:flex;gap:12px;margin-top:8px;">
-            <a href="#" style="position:relative;left:440px">Shipping</a>
-            <a href="#"style="position:relative;left:450px">Returns</a>
-            <a href="mailto:support@desphixs.example"style="position:relative;left:460px">Contact</a>
+         <a href="{% url 'shop:contact' %}"  style="position:relative;left:400px">Contact</a>
+         <a href="{% url 'shop:about' %}"  style="position:relative;left:420px">About</a>
+          <a href="{% url 'shop:terms' %}"style="position:relative;left:430px">Terms & Conditions</a>
+ 
+
+           
         </div>
 
         <p class="footer-copy" style="margin-top:12px;">© FUNNELWEB — All rights reserved</p>

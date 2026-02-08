@@ -1,0 +1,350 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+.about-wrap{
+  max-width: 1150px;
+  margin: 28px auto 70px;
+  padding: 0 16px;
+}
+
+/* HERO */
+.about-hero{
+  border-radius: 22px;
+  padding: 44px 34px;
+  background:
+    radial-gradient(circle at top left, rgba(11,108,255,.25), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(255,122,0,.18), transparent 55%),
+    linear-gradient(135deg,#0f172a,#111827,#1e293b);
+  color: white;
+  box-shadow: 0 22px 55px rgba(0,0,0,.20);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: url("https://www.transparenttextures.com/patterns/cubes.png");
+  opacity: .06;
+  pointer-events:none;
+}
+
+.about-hero h1{
+  font-size: 42px;
+  font-weight: 1000;
+  margin: 0 0 12px;
+  letter-spacing: -1px;
+}
+
+.about-hero p{
+  margin: 0;
+  max-width: 900px;
+  font-size: 15px;
+  line-height: 1.85;
+  color: rgba(255,255,255,.82);
+}
+
+/* STATS */
+.stats-row{
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.stat{
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(8px);
+  font-size: 13px;
+  font-weight: 900;
+  color: rgba(255,255,255,.92);
+}
+
+/* GRID */
+.about-grid{
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 18px;
+  align-items: start;
+}
+
+@media(max-width: 980px){
+  .about-grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* CARD */
+.card{
+  background: white;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 12px 30px rgba(0,0,0,.07);
+  overflow: hidden;
+}
+
+.card-head{
+  padding: 16px 18px;
+  border-bottom: 1px solid #eef2f7;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg,#f8fafc,#ffffff);
+}
+
+.card-head h2{
+  margin: 0;
+  font-size: 15px;
+  font-weight: 1000;
+  color: #0f172a;
+}
+
+.badge{
+  font-size: 12px;
+  font-weight: 900;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg,#dbeafe,#ecfeff);
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.card-body{
+  padding: 18px;
+}
+
+/* FEATURE LIST */
+.feature-list{
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature{
+  display: flex;
+  gap: 12px;
+  padding: 14px 14px;
+  border-radius: 16px;
+  border: 1px solid #eef2f7;
+  background: linear-gradient(135deg,#ffffff,#f8fafc);
+}
+
+.icon{
+  width: 42px;
+  height: 42px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 900;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  flex-shrink: 0;
+}
+
+.feature-title{
+  font-weight: 1000;
+  color: #0f172a;
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+
+.feature-text{
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* SIDEBAR TIMELINE */
+.timeline{
+  display: grid;
+  gap: 14px;
+}
+
+.step{
+  padding: 14px 14px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  background: #fbfdff;
+  position: relative;
+}
+
+.step strong{
+  display: block;
+  font-size: 14px;
+  font-weight: 1000;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.step p{
+  margin: 0;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.footer-note{
+  margin-top: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: #64748b;
+}
+</style>
+
+<div class="about-wrap">
+
+  <!-- HERO -->
+  <div class="about-hero">
+    <h1>About FUNNELWEB</h1>
+    <p>
+      FUNNELWEB is a modern Django-based e-commerce website designed to provide a premium shopping experience.
+      This project focuses on clean UI, secure authentication flow, cart & checkout systems, and advanced product features.
+    </p>
+
+    <div class="stats-row">
+      <div class="stat">🛒 Cart + Checkout</div>
+      <div class="stat">🔐 Login Protected Purchase</div>
+      <div class="stat">⚡ Dynamic Categories</div>
+      <div class="stat">⭐ Reviews + Ratings</div>
+      <div class="stat">📦 Orders Dashboard</div>
+    </div>
+  </div>
+
+  <div class="about-grid">
+
+    <!-- LEFT -->
+    <section class="card">
+      <div class="card-head">
+        <h2>Key Features Included</h2>
+        <span class="badge">Premium UI</span>
+      </div>
+
+      <div class="card-body">
+        <ul class="feature-list">
+
+          <li class="feature">
+            <div class="icon">🛍</div>
+            <div>
+              <div class="feature-title">Product Listing & Smart Search</div>
+              <div class="feature-text">
+                Users can browse products with sorting, search by name/category, and explore a clean modern product layout.
+              </div>
+            </div>
+          </li>
+
+          <li class="feature">
+            <div class="icon">📂</div>
+            <div>
+              <div class="feature-title">Dynamic Category Dropdown</div>
+              <div class="feature-text">
+                Categories are loaded dynamically using API and allow easy filtering for faster shopping.
+              </div>
+            </div>
+          </li>
+
+          <li class="feature">
+            <div class="icon">👁</div>
+            <div>
+              <div class="feature-title">Quick View + Product Detail Page</div>
+              <div class="feature-text">
+                View product details instantly, including offer price, discount badges, and clean product description layout.
+              </div>
+            </div>
+          </li>
+
+          <li class="feature">
+            <div class="icon">🛒</div>
+            <div>
+              <div class="feature-title">Cart System with Quantity Update</div>
+              <div class="feature-text">
+                Users can add products, update quantity, remove items, and see total pricing with offer support.
+              </div>
+            </div>
+          </li>
+
+          <li class="feature">
+            <div class="icon">🔐</div>
+            <div>
+              <div class="feature-title">Login Required for Buying</div>
+              <div class="feature-text">
+                Guests can view products, but purchase actions (cart + checkout) require login for security.
+              </div>
+            </div>
+          </li>
+
+          <li class="feature">
+            <div class="icon">💳</div>
+            <div>
+              <div class="feature-title">Advanced Checkout UI</div>
+              <div class="feature-text">
+                Includes Card / COD / UPI QR / Crypto options, with modern layout and premium order summary.
+              </div>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="card">
+      <div class="card-head">
+        <h2>How FUNNELWEB Works</h2>
+        <span class="badge">Flow</span>
+      </div>
+
+      <div class="card-body">
+        <div class="timeline">
+
+          <div class="step">
+            <strong>1) Browse Products</strong>
+            <p>
+              Users can explore products, view offers, and filter categories without login.
+            </p>
+          </div>
+
+          <div class="step">
+            <strong>2) Login to Purchase</strong>
+            <p>
+              When the user tries to buy, the system ensures login for secure order tracking.
+            </p>
+          </div>
+
+          <div class="step">
+            <strong>3) Cart & Checkout</strong>
+            <p>
+              Add items to cart, update quantities, and proceed to premium checkout with payment options.
+            </p>
+          </div>
+
+          <div class="step">
+            <strong>4) Orders Dashboard</strong>
+            <p>
+              Users can view order history, returns/exchange flow, and order status updates.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <div class="footer-note">
+    FUNNELWEB is a portfolio demo project built using Django, HTML, CSS, and JavaScript.
+  </div>
+
+</div>
+
+{% endblock %}

@@ -411,7 +411,7 @@ def upi_qr(request):
 
     payload = (
         f"upi://pay?"
-        f"pa=demo@upi&"
+        f"pa=tharunkumar2124@okhdfcbank"
         f"pn=FUNNELWEB&"
         f"am={amount}&"
         f"cu=INR"
@@ -746,3 +746,13 @@ def add_to_cart(request, product_id):
 
     item.save()
     return redirect("shop:cart")
+
+
+def about_page(request):
+    return render(request, "shop/about.html")
+
+def contact_page(request):
+    return render(request, "shop/contact.html")
+
+def terms_page(request):
+    return render(request, "shop/terms.html")
