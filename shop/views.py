@@ -19,6 +19,7 @@ from .forms import (
 )
 from .models import ProductComment
 from django.db.models import Avg, Count
+from django.conf import settings
 
 
 
@@ -295,19 +296,20 @@ def checkout(request):
     # ================= BUY NOW LOGIC =================
     buy_now_product_id = request.session.get("buy_now_product_id")
 
-    # If user clicked Buy Now
     if buy_now_product_id:
         product = get_object_or_404(Product, id=buy_now_product_id)
 
-        # Create a fake cart-like item list (so template works)
+        buy_now_qty = int(request.session.get("buy_now_qty", 1))
+        buy_now_size = request.session.get("buy_now_size")
+
         items = [{
             "product": product,
-            "quantity": 1,
-            "size": None,
-            "total_price": Decimal(str(product.get_display_price()))
+            "quantity": buy_now_qty,
+            "size": buy_now_size,
+            "total_price": Decimal(str(product.get_display_price())) * buy_now_qty
         }]
 
-        total = Decimal(str(product.get_display_price()))
+        total = Decimal(str(product.get_display_price())) * buy_now_qty
 
     else:
         # ================= NORMAL CART LOGIC =================
@@ -320,6 +322,9 @@ def checkout(request):
             Decimal(str(item.product.get_display_price())) * item.quantity
             for item in items
         )
+
+    # (rest of your checkout logic continues...)
+
 
     # ================= ORDER PLACE LOGIC =================
     if request.method == "POST":
@@ -407,12 +412,23 @@ def checkout(request):
 # ================= UPI QR CODE =================
 
 def upi_qr(request):
-    amount = request.GET.get('amount', '0')
+    amount = request.GET.get("amount", "0")
+    app = request.GET.get("app", "gpay")   # default gpay
+
+    if app == "phonepe":
+        upi_id = settings.PHONEPE_UPI_ID
+        name = "PhonePe"
+    elif app == "paytm":
+        upi_id = settings.PAYTM_UPI_ID
+        name = "Paytm"
+    else:
+        upi_id = settings.GPAY_UPI_ID
+        name = "GPay"
 
     payload = (
         f"upi://pay?"
-        f"pa=tharunkumar2124@okhdfcbank"
-        f"pn=FUNNELWEB&"
+        f"pa={upi_id}&"
+        f"pn={name}&"
         f"am={amount}&"
         f"cu=INR"
     )
@@ -715,23 +731,28 @@ def delete_comment(request, comment_id):
 
 
 @login_required(login_url="shop:login")
+@require_POST
 def buy_now(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
-    # Store only in session (NOT in cart table)
-    request.session['buy_now_product_id'] = product.id
-    request.session['buy_now_qty'] = 1
+    qty = int(request.POST.get("quantity", 1))
+    size = request.POST.get("size") or None
 
-    return redirect('shop:checkout')
+    request.session['buy_now_product_id'] = product.id
+    request.session['buy_now_qty'] = qty
+    request.session['buy_now_size'] = size
+
+    return redirect("shop:checkout")
 
 
 
 @require_POST
 @login_required(login_url="shop:login")
 def add_to_cart(request, product_id):
-
     session_key = _get_session_key(request)
     product = get_object_or_404(Product, id=product_id, available=True)
+
+    qty = int(request.POST.get("quantity", 1))
 
     item, created = CartItem.objects.get_or_create(
         session_key=session_key,
@@ -740,13 +761,12 @@ def add_to_cart(request, product_id):
     )
 
     if created:
-        item.quantity = 1
+        item.quantity = qty
     else:
-        item.quantity += 1
+        item.quantity += qty
 
     item.save()
     return redirect("shop:cart")
-
 
 def about_page(request):
     return render(request, "shop/about.html")

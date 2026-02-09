@@ -432,9 +432,10 @@
                 <div style="font-weight:1000;margin-bottom:6px;">Choose UPI App</div>
 
                 <div class="upi-row">
-                  <button type="button" class="upi-btn" data-app="GPay">GPay</button>
-                  <button type="button" class="upi-btn" data-app="PhonePe">PhonePe</button>
-                  <button type="button" class="upi-btn" data-app="Paytm">Paytm</button>
+                
+                 <button type="button" class="upi-btn" data-app="gpay">GPay</button>
+  <button type="button" class="upi-btn" data-app="phonepe">PhonePe</button>
+  <button type="button" class="upi-btn" data-app="paytm">Paytm</button>
                 </div>
 
                 <div id="upi-qr" style="display:none;margin-top:14px;">
@@ -442,7 +443,7 @@
                     Scan & Pay ₹{{ total }}
                   </div>
 
-                  <img src="{% url 'shop:upi_qr' %}?amount={{ total }}"
+                  <img id="upiQr" src="{% url 'shop:upi_qr' %}?amount={{ total }}&app=gpay"
                        width="180"
                        style="border-radius:16px;border:1px solid #e5e7eb;background:#fff;padding:10px;">
                 </div>
@@ -529,57 +530,57 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
 
   const cardFields = document.getElementById("card-fields");
   const codFields = document.getElementById("cod-fields");
   const cryptoFields = document.getElementById("crypto-fields");
   const upiFields = document.getElementById("upi-fields");
 
-  const upiQr = document.getElementById("upi-qr");
-  const upiApp = document.getElementById("upi_app");
+  const upiQrBox = document.getElementById("upi-qr");
+  const upiHidden = document.getElementById("upi_app");
 
-  const payOptions = document.querySelectorAll(".pay-option");
   const radios = document.querySelectorAll('input[name="payment_method"]');
 
-  function setSelectedCard(){
-    payOptions.forEach(opt => opt.classList.remove("selected"));
-    const checked = document.querySelector('input[name="payment_method"]:checked');
-    if (!checked) return;
-    checked.closest(".pay-option").classList.add("selected");
-  }
+  function toggleFields() {
+    const selected = document.querySelector('input[name="payment_method"]:checked').value;
 
-  function togglePaymentFields(){
-    const method = document.querySelector('input[name="payment_method"]:checked').value;
+    cardFields.style.display = "none";
+    codFields.style.display = "none";
+    cryptoFields.style.display = "none";
+    upiFields.style.display = "none";
 
-    cardFields.style.display = method === "card" ? "block" : "none";
-    codFields.style.display = method === "cod" ? "block" : "none";
-    cryptoFields.style.display = method === "crypto" ? "block" : "none";
-    upiFields.style.display = method === "upi" ? "block" : "none";
+    if (selected === "card") cardFields.style.display = "block";
+    if (selected === "cod") codFields.style.display = "block";
+    if (selected === "crypto") cryptoFields.style.display = "block";
+    if (selected === "upi") upiFields.style.display = "block";
 
-    if(method !== "upi"){
-      upiQr.style.display = "none";
-      upiApp.value = "";
-      document.querySelectorAll(".upi-btn").forEach(b => b.classList.remove("active"));
+    if (selected !== "upi") {
+      upiQrBox.style.display = "none";
+      upiHidden.value = "";
     }
-
-    setSelectedCard();
   }
 
-  radios.forEach(r => r.addEventListener("change", togglePaymentFields));
-  togglePaymentFields();
+  radios.forEach(radio => {
+    radio.addEventListener("change", toggleFields);
+  });
+
+  toggleFields();
 
   document.querySelectorAll(".upi-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".upi-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+    btn.addEventListener("click", function () {
+      const app = btn.dataset.app;
 
-      upiApp.value = btn.dataset.app;
-      upiQr.style.display = "block";
+      upiHidden.value = app;
+      upiQrBox.style.display = "block";
+
+      document.getElementById("upiQr").src =
+        "{% url 'shop:upi_qr' %}?amount={{ total }}&app=" + app;
     });
   });
 
 });
 </script>
+
 
 {% endblock %}

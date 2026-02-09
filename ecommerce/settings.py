@@ -67,3 +67,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# ================= UPI SETTINGS =================
+GPAY_UPI_ID = "tharunkumar2124@okhdfcbank"
+PHONEPE_UPI_ID = "6382040121@ibl"
+PAYTM_UPI_ID = "8838897256@pthdfc"
