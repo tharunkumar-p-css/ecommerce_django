@@ -59,8 +59,8 @@ urlpatterns = [
     path('api/cart/summary/', views.api_cart_summary, name='api_cart_summary'),
     path('api/cart/add/', views.api_cart_add, name='api_cart_add'),
     path('order/<int:order_id>/cancel/', views.cancel_order, name='cancel_order'),
-    path("about/", views.about_page, name="about"),
+   
+   path("about/", views.about_page, name="about"),
     path("contact/", views.contact_page, name="contact"),
     path("terms/", views.terms_page, name="terms"),
-   
 ]

@@ -15,7 +15,7 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = "Categories"
 
-    def _str_(self):
+    def str(self):
         return self.name
 
     def get_absolute_url(self):
@@ -40,7 +40,7 @@ class Product(models.Model):
     class Meta:
         ordering = ('-created_at',)
 
-    def _str_(self):
+    def str(self):
         return self.name
 
     def get_absolute_url(self):
@@ -75,7 +75,7 @@ class CartItem(models.Model):
     def total_price(self):
         return self.product.get_display_price() * self.quantity
 
-    def _str_(self):
+    def str(self):
         return f"{self.product.name} × {self.quantity} ({self.size or 'No size'})"
 
 
@@ -143,7 +143,7 @@ class Order(models.Model):
     default='PENDING'
 )
 
-    def _str_(self):
+    def str(self):
         return f"Order #{self.id}"
 
 
@@ -157,7 +157,7 @@ class OrderItem(models.Model):
 
     size = models.CharField(max_length=10, blank=True, null=True)  # 👟 ADD THIS
 
-    def _str_(self):
+    def str(self):
         return f"{self.product.name} × {self.quantity} ({self.size or 'No size'})"
 
 
@@ -172,7 +172,7 @@ class Wishlist(models.Model):
     class Meta:
         unique_together = ('user', 'session_key', 'product')
 
-    def _str_(self):
+    def str(self):
         return f"Wishlist: {self.product.name}"
 
 
@@ -186,7 +186,7 @@ class PriceDropAlert(models.Model):
     is_triggered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def _str_(self):
+    def str(self):
         return f"Price alert for {self.product.name}"
 
 
@@ -210,7 +210,7 @@ class OfferAd(models.Model):
     class Meta:
         ordering = ('-created_at',)
 
-    def _str_(self):
+    def str(self):
         return f"{self.title} ({self.position})"
     
 
@@ -224,5 +224,5 @@ class ProductComment(models.Model):
     class Meta:
         ordering = ['-created_at']
 
-    def _str_(self):
+    def str(self):
         return f"{self.user} - {self.product.name}"
