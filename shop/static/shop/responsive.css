@@ -1,0 +1,1631 @@
+/* Extra responsive fixes */
+
+@media (max-width: 991px) {
+  /* If any section uses fixed width, force it responsive */
+  .container {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Prevent buttons from breaking */
+  .nav-btn,
+  .nav-link,
+  .nav-tab {
+    font-size: 13px;
+  }
+}
+
+/* =========================================
+   GLOBAL RESPONSIVE FIXES
+========================================= */
+
+/* Prevent horizontal scroll */
+html, body {
+  overflow-x: hidden;
+}
+
+/* All images responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make containers fit mobile */
+@media (max-width: 576px) {
+  .container {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+}
+
+
+/* =========================================
+   MOBILE + TABLET HEADER FINAL FIX
+========================================= */
+
+@media (max-width: 991px) {
+
+  /* Logo small */
+  .logo {
+    font-size: 16px !important;
+  }
+
+  /* Search bar bigger */
+  .search {
+    flex: 1 !important;
+    width: 100% !important;
+  }
+
+  .search input {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 10px 14px !important;   /* 🔥 bigger */
+    font-size: 14px !important;
+  }
+
+  /* Hamburger smaller */
+  .navbar-toggler {
+    padding: 4px 6px !important;     /* 🔥 smaller */
+    border-radius: 8px !important;
+  }
+
+  .navbar-toggler-icon {
+    width: 14px !important;          /* 🔥 smaller */
+    height: 14px !important;
+  }
+
+  /* Reduce spacing */
+  .brand-row {
+    gap: 10px !important;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 576px) {
+
+  .logo {
+    font-size: 15px !important;
+  }
+
+  .search input {
+    padding: 10px 14px !important;   /* keep bigger */
+    font-size: 13px !important;
+  }
+
+  .navbar-toggler {
+    padding: 3px 5px !important;     /* extra smaller */
+  }
+
+  .navbar-toggler-icon {
+    width: 13px !important;
+    height: 13px !important;
+  }
+}
+
+/* =========================================
+   MOBILE/TABLET: HAMBURGER ONLY LINES
+   + Bigger Search Bar
+========================================= */
+
+@media (max-width: 991px) {
+
+  /* Bigger search bar */
+  .search input {
+    padding: 11px 16px !important;
+    font-size: 14px !important;
+    height:30px ;
+    
+  }
+
+  /* Remove hamburger background + border */
+  .navbar-toggler {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Remove focus shadow */
+  .navbar-toggler:focus {
+    box-shadow: none !important;
+  }
+
+  /* Make only 3 line icon visible */
+  .navbar-toggler-icon {
+    width: 22px !important;
+    height: 22px !important;
+    background-size: 100% 100% !important;
+    filter: grayscale(100%) brightness(0.2); /* makes it dark */
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 576px) {
+  .search input {
+    padding: 11px 16px !important;
+    font-size: 13px !important;
+  }
+
+  .navbar-toggler-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
+/* Make search input border a little darker (mobile/tablet only) */
+@media (max-width: 991px) {
+  .search input {
+    border: 1px solid #cbd5e1 !important;  /* darker line */
+  }
+
+  .search input:focus {
+    outline: none !important;
+    border-color: #94a3b8 !important;      /* darker on focus */
+    box-shadow: 0 0 0 3px rgba(11, 108, 255, 0.12) !important;
+  }
+}
+
+/* =========================================
+   MOBILE/TABLET: Make header bottom line darker
+========================================= */
+
+@media (max-width: 991px) {
+
+  /* Add a nice darker divider under the navbar */
+  .site-header {
+    border-bottom: 1px solid #cbd5e1 !important;
+  }
+
+  /* (Optional) Give slight shadow for better separation */
+  .site-header {
+    box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+  }
+}
+
+
+
+/* =========================================
+   MOBILE DROPDOWN MENU (LIKE YOUR SKETCH)
+========================================= */
+
+@media (max-width: 991px) {
+
+  /* Make navbar container relative */
+  .topbar {
+    position: relative;
+  }
+
+  /* Dropdown menu box under hamburger */
+  #mainNavbar {
+    position: absolute;
+    top: 58px;          /* adjust if needed */
+    right: 16px;
+    width: 200px;
+
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 14px;
+    padding: 10px;
+
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    z-index: 9999;
+  }
+
+  /* Make menu items look clean */
+  .nav-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: stretch;
+    padding: 0 !important;
+  }
+
+  .nav-actions a,
+  .nav-actions button {
+    font-size: 14px !important;
+    padding: 10px 10px !important;
+    border-radius: 10px;
+    width: 100%;
+    text-align: left;
+  }
+
+  /* Hover */
+  .nav-actions a:hover,
+  .nav-actions button:hover {
+    background: rgba(11, 108, 255, 0.08);
+  }
+
+  /* Offers pill should look normal inside box */
+  .offers-pill {
+    width: 100%;
+    text-align: left;
+    border-radius: 10px !important;
+    padding: 10px 10px !important;
+  }
+
+  /* Categories dropdown button also same style */
+  .dropdown-toggle {
+    width: 100%;
+    text-align: left;
+    font-size: 14px !important;
+    padding: 10px 10px !important;
+    border-radius: 10px;
+  }
+}
+
+/* ✅ Mobile/Tablet menu font size smaller */
+@media (max-width: 991px) {
+
+  /* All links inside hamburger dropdown */
+  #mainNavbar .nav-actions a,
+  #mainNavbar .nav-actions button {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+  }
+
+  /* Categories text (dropdown button) */
+  #mainNavbar .dropdown-toggle {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+  }
+
+}
+
+
+/* ✅ Make hamburger dropdown box smaller (mobile/tablet only) */
+@media (max-width: 991px) {
+
+  #mainNavbar {
+    width: 170px !important;     /* smaller box */
+    padding: 8px !important;     /* less padding */
+    border-radius: 12px !important;
+  }
+
+  /* reduce inside link padding also */
+  #mainNavbar .nav-actions a,
+  #mainNavbar .nav-actions button {
+    padding: 8px 8px !important;
+  }
+
+  /* offers pill also smaller */
+  #mainNavbar .offers-pill {
+    padding: 8px 8px !important;
+  }
+
+}
+
+
+/* ===========================================
+   PRODUCT LIST RESPONSIVE (ONLY MOBILE/TABLET)
+=========================================== */
+
+@media (max-width: 991px) {
+
+  /* HERO */
+  .hero h1 {
+    font-size: 28px !important;
+    line-height: 1.15 !important;
+  }
+
+  .hero p {
+    font-size: 14px !important;
+    margin-top: 10px !important;
+  }
+
+  /* CTA stack */
+  .ctas {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+
+  .ctas a.btn,
+  .ctas a.btn-secondary {
+    width: 100% !important;
+    text-align: center !important;
+    padding: 12px 0 !important;
+    font-size: 14px !important;
+  }
+
+  /* Filter full width */
+  .inline-filter {
+    width: 100% !important;
+  }
+
+  .inline-filter label {
+    display: block !important;
+    margin-bottom: 6px !important;
+    font-size: 13px !important;
+  }
+
+  .inline-filter select {
+    width: 100% !important;
+    padding: 12px 14px !important;
+    font-size: 14px !important;
+    border-radius: 12px !important;
+  }
+
+  /* OFFER ADS */
+  .offer-wrapper {
+    margin: 14px 0 18px !important;
+  }
+
+  .offer-card {
+    min-width: 280px !important; /* FIXED */
+    padding: 16px !important;
+    border-radius: 16px !important;
+  }
+
+  .offer-left h2 {
+    font-size: 16px !important;
+  }
+
+  .offer-left p {
+    font-size: 12px !important;
+  }
+
+  .offer-right {
+    font-size: 34px !important;
+  }
+
+  /* PRODUCT GRID */
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px !important;
+    margin-top: 20px !important;
+  }
+
+  .product-card {
+    padding: 12px !important;
+    border-radius: 12px !important;
+  }
+
+  .product-card img {
+    height: 150px !important;
+  }
+
+  .product-card h3 {
+    font-size: 14px !important;
+  }
+
+  .price {
+    font-size: 15px !important;
+  }
+
+  .old-price {
+    font-size: 13px !important;
+  }
+
+  .view-btn {
+    font-size: 13px !important;
+    padding: 10px 0 !important;
+  }
+
+  /* badges smaller */
+  .offer-chip {
+    font-size: 8px !important;
+    padding: 4px 6px !important;
+  }
+
+  .trending-chip {
+    font-size: 9px !important;
+    padding: 4px 8px !important;
+  }
+}
+
+
+/* EXTRA SMALL MOBILE */
+@media (max-width: 480px) {
+
+  .product-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hero h1 {
+    font-size: 24px !important;
+  }
+
+  .offer-card {
+    min-width: 250px !important;
+  }
+}
+
+/* ================= PRODUCT LIST MOBILE/TABLET ONLY ================= */
+@media (max-width: 991px) {
+
+  /* Offer Ads smaller */
+  .offer-card {
+    min-width: 280px !important;
+    padding: 12px 14px !important;
+    border-radius: 14px !important;
+  }
+
+  .offer-left h2 {
+    font-size: 15px !important;
+  }
+
+  .offer-left p {
+    font-size: 12px !important;
+  }
+
+  .offer-right {
+    font-size: 32px !important;
+  }
+
+  /* HERO text smaller */
+  .hero h1 {
+    font-size: 22px !important;
+    line-height: 1.25 !important;
+  }
+
+  .hero p {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* CTA one line (Shop Now, New Arrivals, Filter) */
+  .hero .ctas {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+    align-items: center !important;
+    overflow-x: auto !important;
+    padding-bottom: 4px !important;
+  }
+
+  .hero .ctas a,
+  .hero .ctas form,
+  .hero .ctas .inline-filter {
+    flex-shrink: 0 !important;
+  }
+
+  /* Make buttons smaller */
+  .hero .ctas .btn {
+    font-size: 12px !important;
+    padding: 8px 12px !important;
+    border-radius: 999px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Filter smaller */
+  .hero .inline-filter label {
+    font-size: 12px !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  .hero .inline-filter select {
+    font-size: 12px !important;
+    padding: 7px 12px !important;
+    border-radius: 999px !important;
+    white-space: nowrap !important;
+  }
+
+}
+
+
+/*=========product_list===========*/
+
+/* ================= MOBILE + TABLET FIX ================= */
+@media (max-width: 991px) {
+
+  /* 1) H1 bold for mobile/tablet */
+  .hero h1{
+    font-weight: 900 !important;
+  }
+
+  /* 2) CTA row in one line */
+  .hero .ctas{
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 14px !important;
+
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* prevent wrap for each item */
+  .hero .ctas > *{
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+  }
+
+  /* Filter in one line */
+  .hero .inline-filter{
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .hero .inline-filter label{
+    margin: 0 !important;
+    font-weight: 700 !important;
+  }
+
+  .hero .inline-filter form{
+    margin: 0 !important;
+  }
+
+  .hero .inline-filter select{
+    width: auto !important;
+  }
+}
+
+@media (max-width: 991px){
+
+  /* Make CTA row single line */
+  .hero .ctas{
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 14px !important;
+    width: 100% !important;
+  }
+
+  /* Make links not take full width */
+  .hero .ctas a{
+    display: inline-flex !important;
+    width: auto !important;
+  }
+
+  /* Make filter inline */
+  .hero .inline-filter{
+    display: inline-flex !important;
+    width: auto !important;
+  }
+
+  /* Make label + select inline */
+  .hero .inline-filter label{
+    display: inline-block !important;
+    white-space: nowrap !important;
+  }
+
+  .hero .inline-filter select{
+    width: auto !important;
+  }
+}
+
+@media (max-width: 991px){
+
+  /* New Arrivals smaller */
+  .hero .ctas a.btn.btn-secondary{
+    font-size: 12px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Recommended dropdown smaller */
+  .hero .inline-filter select{
+    font-size: 11px !important;
+    padding: 5px 8px !important;
+    border-radius: 999px !important;
+  }
+
+  /* Recommended text inside dropdown smaller */
+  .hero .inline-filter select option{
+    font-size: 11px !important;
+  }
+
+}
+
+@media (max-width: 991px){
+
+  .hero .inline-filter select{
+    font-size: 10px !important;
+    padding: 3px 6px !important;
+    border-radius: 999px !important;
+    height: 28px !important;
+    line-height: 28px !important;
+  }
+
+}
+
+@media (max-width: 991px){
+
+  /* Make Shop Now + New Arrivals same size as Filter */
+  .hero .ctas a{
+    font-size: 10px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Make New Arrivals smaller also */
+  .hero .ctas a.btn.btn-secondary{
+    font-size: 10px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Recommended dropdown full view */
+  .hero .inline-filter select{
+    width: 110px !important;   /* Increase width */
+    font-size: 9px !important;
+    padding: 2px 6px !important;
+    height: 22px !important;
+    border-radius: 999px !important;
+  }
+
+  /* Reduce gap a bit more */
+  .hero .ctas{
+    gap: 6px !important;
+  }
+}
+
+@media (max-width: 991px){
+
+  /* Make Shop Now + New Arrivals same small size */
+  .hero .ctas a{
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    padding: 0 !important;     /* remove button padding */
+    background: transparent !important;
+    border: none !important;
+  }
+
+  /* Make Filter text smaller */
+  .hero .inline-filter label{
+    font-size: 10px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Reduce spacing between items */
+  .hero .ctas{
+    gap: 6px !important;
+  }
+}
+
+@media (max-width: 991px){
+
+  /* Make Shop Now same size like New Arrivals + Filter */
+  .hero .ctas .btn{
+    font-size: 10px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    color: #0b6cff !important;
+    font-weight: 700 !important;
+  }
+
+  /* Reduce gap between Shop Now and New Arrivals */
+  .hero .ctas{
+    gap: 8px !important;
+  }
+
+  /* Extra: reduce space only between first 2 links */
+  .hero .ctas a:first-child{
+    margin-right: 6px !important;
+  }
+}
+
+@media (max-width: 991px){
+
+  /* Make the Recommended dropdown smaller */
+  .hero .inline-filter select{
+    width: 120px !important;     /* reduce box width */
+    font-size: 10px !important;  /* smaller text */
+    padding: 4px 10px !important; /* reduce height */
+    border-radius: 999px !important;
+  }
+
+  /* Reduce space inside filter section */
+  .hero .inline-filter{
+    gap: 6px !important;
+  }
+
+  /* Make Filter label smaller */
+  .hero .inline-filter label{
+    font-size: 10px !important;
+  }
+}
+
+@media (max-width: 991px){
+
+  .hero .inline-filter select{
+    width: 95px !important;   /* smaller width */
+    min-width: 95px !important;
+    font-size: 8px !important;
+    padding: 4px 8px !important;
+    
+  }
+
+}
+/* ================= FOOTER MOBILE + TABLET ONLY ================= */
+@media (max-width: 991px){
+
+  .site-footer{
+    padding: 22px 0 !important;
+    margin-top: 35px !important;
+  }
+
+  .site-footer .container{
+    padding: 12px !important;
+  }
+
+  /* Footer logo/title */
+  .site-footer h2,
+  .site-footer h3,
+  .site-footer .footer-title{
+    font-size: 16px !important;
+    margin-bottom: 6px !important;
+  }
+
+  /* Footer paragraph */
+  .site-footer p{
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+    margin: 6px 0 !important;
+  }
+
+  /* Footer links */
+  .site-footer a{
+    font-size: 12px !important;
+  }
+
+  /* If you have footer menu row */
+  .site-footer .footer-links{
+    gap: 10px !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+
+  /* Copyright text */
+  .site-footer .copyright{
+    font-size: 11px !important;
+    margin-top: 12px !important;
+  }
+
+}
+
+/* ===== FOOTER LINKS CENTER (MOBILE + TABLET ONLY) ===== */
+@media (max-width: 991px){
+
+  .site-footer a{
+    display: inline-block;
+    text-align: center;
+  }
+
+  /* If your footer links are inside any row/div */
+  .site-footer{
+    text-align: center !important;
+  }
+
+  /* If you have a footer links container */
+  .site-footer .footer-links{
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 14px !important;
+    flex-wrap: wrap !important;
+  }
+
+}
+
+/* ===== FOOTER MOBILE FIX ===== */
+@media (max-width: 991px){
+
+  .site-footer{
+    text-align: center !important;
+  }
+
+  .site-footer a{
+    display: inline-block !important;
+    margin: 0 10px !important;
+  }
+
+}
+
+/* ===== FOOTER GAP FIX (MOBILE/TABLET ONLY) ===== */
+@media (max-width: 991px){
+
+  /* reduce footer padding */
+  .site-footer{
+    padding: 22px 0 !important;
+  }
+
+  /* reduce container padding */
+  .site-footer .container{
+    padding: 12px 16px !important;
+  }
+
+  /* reduce gap between Contact / About / Terms */
+  .site-footer a{
+    margin: 0 6px !important;   /* reduce spacing */
+    font-size: 13px !important; /* smaller */
+  }
+
+  /* reduce spacing between lines */
+  .site-footer p{
+    margin: 8px 0 !important;
+    font-size: 12px !important;
+  }
+
+  /* make brand smaller */
+  .site-footer h3,
+  .site-footer h2{
+    font-size: 16px !important;
+    margin-bottom: 6px !important;
+  }
+
+}
+
+/*========= for laptop view ==========*/
+/* =============================== */
+/* ========================= */
+/* FOOTER CENTER (DESKTOP)   */
+/* ========================= */
+@media (min-width: 992px){
+
+  /* Make everything center */
+  .site-footer{
+    text-align: center !important;
+  }
+
+  .site-footer .row{
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  /* Make both columns full width (stack like mobile) */
+  .site-footer .col-lg-6{
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    text-align: center !important;
+  }
+
+  /* Center the links */
+  .site-footer .col-lg-6:last-child .d-flex{
+    justify-content: center !important;
+  }
+
+}
+
+/* ========================= */
+/* FOOTER PERFECT CENTER DESKTOP */
+/* ========================= */
+@media (min-width: 992px){
+
+  .site-footer{
+    text-align: center !important;
+  }
+
+  .site-footer .container{
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .site-footer .row{
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .site-footer .col-lg-6,
+  .site-footer .col-12{
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+    text-align: center !important;
+  }
+
+  .site-footer .d-flex{
+    justify-content: center !important;
+  }
+
+}
+/* =============================== */
+/* FOOTER BRAND CENTER (DESKTOP)   */
+/* =============================== */
+@media (min-width: 992px){
+
+  /* Center brand + tagline */
+  .site-footer .brand,
+  .site-footer .tagline{
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  /* Make left column full width so it becomes center */
+  .site-footer .col-lg-6:first-child{
+    width: 100% !important;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+
+}
+
+@media (min-width: 347px) and (max-width: 1024px) {
+  footer {
+    text-align: center !important;
+  }
+
+  footer .row {
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  footer .d-flex {
+    justify-content: center !important;
+    width: 100% !important;
+    margin-top: 10px !important;
+  }
+
+  footer .d-flex a {
+    display: inline-block !important;
+    margin: 0 12px !important;
+  }
+}
+
+/*==========product_detail_working========*/
+/* ================= PRODUCT DETAIL (MOBILE + TABLET ONLY) ================= */
+@media (max-width: 991px){
+
+  .product-page{
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+    margin-top: 15px !important;
+  }
+
+  .product-media img{
+    max-width: 320px !important;
+    margin: 0 auto !important;
+    display: block !important;
+    border-radius: 14px !important;
+  }
+
+  .product-info{
+    max-width: 100% !important;
+  }
+
+  .product-info h1{
+    font-size: 20px !important;
+    line-height: 1.25 !important;
+  }
+
+  .price-big{
+    font-size: 22px !important;
+  }
+
+  .strike{
+    font-size: 14px !important;
+  }
+
+  .discount-badge{
+    font-size: 11px !important;
+    padding: 5px 10px !important;
+  }
+
+  .desc{
+    font-size: 13px !important;
+  }
+
+  /* quantity + size smaller */
+  .inline-fields{
+    gap: 10px !important;
+  }
+
+  .inline-fields input,
+  .inline-fields select{
+    width: 130px !important;
+    padding: 8px 10px !important;
+    font-size: 13px !important;
+  }
+
+  /* buttons smaller */
+  .btn{
+    padding: 10px 14px !important;
+    font-size: 13px !important;
+    border-radius: 12px !important;
+  }
+
+  /* review section smaller */
+  .review-section{
+    padding: 18px !important;
+  }
+
+  .review-header{
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+  }
+
+  .review-row{
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .review-row input{
+    width: 100% !important;
+  }
+
+  .review-row button{
+    width: 100% !important;
+  }
+
+  .rating-input{
+    justify-content: flex-start !important;
+  }
+
+}
+
+/* ================= PRODUCT DETAIL (MOBILE + TABLET) ================= */
+@media (max-width: 991px){
+
+  /* Whole page */
+  .product-page{
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+    margin-top: 14px !important;
+  }
+
+  /* Image smaller */
+  .product-media img{
+    max-width: 320px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    display: block !important;
+    border-radius: 14px !important;
+  }
+
+  /* Text smaller */
+  .product-info{
+    max-width: 100% !important;
+  }
+
+  .product-info h1{
+    font-size: 20px !important;
+    font-weight: 900 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .small{
+    font-size: 12px !important;
+  }
+
+  .desc{
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Price row */
+  .price-row{
+    gap: 10px !important;
+    margin: 14px 0 !important;
+    flex-wrap: wrap !important;
+  }
+
+  .price-big{
+    font-size: 22px !important;
+  }
+
+  .strike{
+    font-size: 13px !important;
+  }
+
+  .discount-badge{
+    font-size: 11px !important;
+    padding: 4px 10px !important;
+  }
+
+  /* Quantity + size row */
+  .inline-fields{
+    gap: 12px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .inline-fields input,
+  .inline-fields select{
+    width: 140px !important;
+    padding: 8px 10px !important;
+    font-size: 13px !important;
+    border-radius: 10px !important;
+  }
+
+  .field label{
+    font-size: 12px !important;
+  }
+
+  /* Buttons row like your sketch */
+  .action-row{
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .action-row .btn{
+    width: 100% !important;
+    padding: 10px 10px !important;
+    font-size: 12px !important;
+    border-radius: 12px !important;
+    text-align: center !important;
+  }
+
+  /* Notify button full width */
+  .alert-box{
+    margin-top: 18px !important;
+    padding: 12px !important;
+    border-radius: 12px !important;
+  }
+
+  .alert-box .btn{
+    width: 100% !important;
+  }
+
+  /* Recommendations */
+  .reco-grid{
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .reco-card img{
+    height: 120px !important;
+  }
+
+  /* Review section */
+  .review-section{
+    padding: 16px !important;
+  }
+
+  .review-header{
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+  }
+
+  .review-row{
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .review-row input,
+  .review-row button{
+    width: 100% !important;
+  }
+
+}
+
+@media (max-width: 991px){
+
+  /* Center the whole product page */
+  .product-page{
+    width: 100% !important;
+    max-width: 420px !important;   /* mobile card width */
+    margin: 14px auto !important;  /* center */
+    padding: 0 12px !important;    /* equal gap left + right */
+  }
+
+  /* Center image */
+  .product-media{
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .product-media img{
+    max-width: 320px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  /* Center info */
+  .product-info{
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+}
+
+@media (max-width: 991px){
+
+  /* Fix unequal left-right gap */
+  body{
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  main.container,
+  .container{
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .product-page{
+    width: 100% !important;
+    max-width: 420px !important;
+    margin: 14px auto !important;
+  }
+
+}
+
+
+/* ================= PRODUCT DETAIL MOBILE + TABLET FIX ================= */
+@media (max-width: 991px){
+
+  /* keep product section centered */
+  .product-page{
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+    margin-top: 14px !important;
+    padding: 0 12px !important;
+  }
+
+  .product-info{
+    max-width: 100% !important;
+  }
+
+  /* ===== Quantity + Size in one row ===== */
+  .inline-fields{
+    display: flex !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin-bottom: 14px !important;
+  }
+
+  .inline-fields .field{
+    width: 50% !important;
+  }
+
+  .inline-fields input,
+  .inline-fields select{
+    width: 100% !important;
+    padding: 10px 10px !important;
+    font-size: 14px !important;
+    border-radius: 10px !important;
+  }
+
+  /* ===== Buy Now + Add to Cart + Back in one row ===== */
+  .action-row{
+    display: flex !important;
+    gap: 10px !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+  }
+
+  .action-row .btn{
+    flex: 1 !important;
+    padding: 10px 8px !important;
+    font-size: 13px !important;
+    border-radius: 12px !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+
+  /* ===== Notify Button Full width ===== */
+  .alert-box{
+    margin-top: 16px !important;
+    width: 100% !important;
+    padding: 12px !important;
+    border-radius: 14px !important;
+  }
+
+  .alert-box .btn{
+    width: 100% !important;
+    display: block !important;
+    text-align: center !important;
+  }
+
+}
+
+/* ================= PRODUCT DETAIL MOBILE FIX ================= */
+@media (max-width: 991px){
+
+  /* main page center */
+  .product-page{
+    display: block !important;
+    width: 100% !important;
+    max-width: 360px !important;
+    margin: 0 auto !important;
+    padding: 0 14px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* image container center */
+  .product-media{
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
+
+  /* image must not overflow */
+  .product-media img{
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    margin: 0 auto !important;
+    
+  }
+
+  /* info should also be full width */
+  .product-info{
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+}
+@media (max-width: 480px){
+
+  /* give gap from navbar */
+  .product-page{
+    margin-top: 18px !important;
+  }
+
+  /* extra safe gap for image */
+  .product-media{
+    padding-top: 10px !important;
+  }
+}
+
+@media (max-width: 991px){
+
+  /* Fix unequal left-right gap */
+  body{
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  main.container,
+  .container{
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .product-page{
+    width: 100% !important;
+    max-width: 420px !important;
+    margin: 14px auto !important;
+  }
+
+}
+/* ================= PRODUCT DETAIL MOBILE + TABLET FIX ================= */
+@media (max-width: 991px){
+
+  /* keep product section centered */
+  .product-page{
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+    margin-top: 14px !important;
+    padding: 0 12px !important;
+  }
+
+  .product-info{
+    max-width: 100% !important;
+  }
+
+  /* ===== Quantity + Size in one row ===== */
+  .inline-fields{
+    display: flex !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin-bottom: 14px !important;
+  }
+
+  .inline-fields .field{
+    width: 50% !important;
+  }
+
+  .inline-fields input,
+  .inline-fields select{
+    width: 100% !important;
+    padding: 10px 10px !important;
+    font-size: 14px !important;
+    border-radius: 10px …
+  }
+}
+/* ===== CENTER PRODUCT DETAIL PAGE ONLY MOBILE/TABLET ===== */
+@media (max-width: 990px){
+
+  /* this will force equal left & right spacing */
+.product-page{
+    width: 100% !important;
+    max-width: 420px !important;   /* mobile card width */
+    margin: 14px auto 0 auto !important;  /* center */
+    padding: 0 12px !important;
+  }
+
+  /* image also should fit inside properly */
+  .product-media img{
+    width: 100% !important;
+    height: auto !important;
+  }
+
+}
+/* ================= PRODUCT DETAIL MOBILE FIX ================= */
+@media (max-width: 990px){
+
+  /* main page center */
+  .product-page{
+    display: block !important;
+    width: 100% !important;
+    max-width: 360px !important;
+    margin: 0 auto !important;
+    padding: 0 14px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* image container center */
+  .product-media{
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
+
+  /* image must not overflow */
+  .product-media img{
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    margin: 0 auto !important;
+  }
+
+  /* info should also be full width */
+  .product-info{
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+}
+@media (max-width: 990px){
+
+  /* give gap from navbar */
+  .product-page{
+    margin-top: 18px !important;
+  }
+
+  /* extra safe gap for image */
+  .product-media{
+    padding-top: 10px !important;
+  }
+}
+
+@media (max-width: 991px){
+
+  /* give equal left-right padding to whole product page */
+  .product-page{
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* fix action row alignment */
+  .product-page .action-row{
+    width: 100% !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    padding: 0 !important;
+    margin: 12px 0 0 0 !important;
+  }
+
+  /* make all 3 buttons same size */
+  .product-page .action-row .btn{
+    flex: 1 !important;
+    min-width: 0 !important;
+    text-align: center !important;
+    padding: 10px 10px !important;
+    font-size: 13px !important;
+  }
+}
+@media (max-width: 990px){
+
+  /* BUTTON ROW - force single line */
+  .product-page .action-row{
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+  }
+
+  /* make buttons smaller */
+  .product-page .action-row .btn{
+    flex: 1 !important;
+    padding: 8px 6px !important;
+    font-size: 12px !important;
+    border-radius: 10px !important;
+    white-space: nowrap !important;
+  }
+
+}
+@media (max-width: 990px){
+
+  /* BUTTON ROW - always single line */
+  .product-page .action-row{
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+  }
+
+  /* Make 3 buttons equal width */
+  .product-page .action-row .btn{
+    flex: 1 !important;
+    padding: 7px 4px !important;
+    font-size: 11px !important;
+    border-radius: 10px !important;
+    text-align: center !important;
+
+    /* IMPORTANT: stop breaking */
+    white-space: nowrap !important;
+   
+  }
+
+  /* Reduce icon size inside buttons */
+  .product-page .action-row .btn i,
+  .product-page .action-row .btn svg{
+    font-size: 12px !important;
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+}
+@media (max-width: 980px){
+
+  /* Move Back button slightly right */
+  .product-page .action-row a.btn-outline{
+    margin-left: 10px !important;
+  }
+
+}
+
+@media (max-width: 480px){
+
+  /* main page padding center */
+  .product-page{
+    width: 100% !important;
+    padding: 16px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Quantity + Size in equal width */
+  .inline-fields{
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+
+  .inline-fields .field{
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* THIS IS THE MAIN FIX */
+  .inline-fields input,
+  .inline-fields select{
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+}
+
+
+@media (max-width: 768px){
+
+  /* force stars left */
+  .rating-input{
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  /* if stars are inside review-row */
+  .review-row{
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .review-row input,
+  .review-row button{
+    width: 100% !important;
+  }
+}
+

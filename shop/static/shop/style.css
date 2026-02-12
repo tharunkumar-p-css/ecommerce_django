@@ -6,11 +6,6 @@ body{
   color:#0f1720;
 }
 
-.container{
-  max-width:1180px;
-  margin:0 auto;
-  padding:22px;
-}
 
 /* ===== HEADER ===== */
 .site-header{
@@ -160,10 +155,30 @@ body{
   object-fit:contain;
 }
 
-/* ===== FOOTER ===== */
-.site-footer{
-  background:#f4f5f7;
-  padding:40px 0;
-  margin-top:60px;
-  text-align:center;
+
+
+/* FOOTER DESKTOP CENTER CONTROL */
+@media (min-width: 992px){
+
+  /* Make footer content area smaller (so right links come more center) */
+  .site-footer .container{
+    max-width: 750px !important;  /* reduce more */
+  }
+
+  .site-footer .col-lg-6:first-child{
+    text-align: left !important;
+  }
+
+  .site-footer .col-lg-6:last-child{
+    text-align: right !important;
+  }
+
+  .site-footer .col-lg-6:last-child .d-flex{
+    justify-content: flex-end !important;
+  }
+
+  .site-footer .footer-copy{
+    text-align: center !important;
+  }
 }
+
