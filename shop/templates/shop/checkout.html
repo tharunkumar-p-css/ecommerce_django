@@ -311,6 +311,33 @@
   resize: none !important;
 }
 
+/* ==========================
+   DESKTOP ONLY - FORCE STICKY WORK
+   ========================== */
+@media (min-width: 992px){
+
+  /* Important: remove overflow blocking sticky */
+  body, html{
+    overflow: visible !important;
+  }
+
+  /* remove overflow hidden from all parents */
+  .checkout-wrap,
+  .checkout-grid,
+  .checkout-grid > div,
+  aside.summary{
+    overflow: visible !important;
+  }
+
+  /* sticky summary */
+  aside.summary{
+    position: sticky !important;
+    top: 20px !important;
+    align-self: start !important;
+  }
+
+}
+
 </style>
 
 <div class="checkout-wrap">

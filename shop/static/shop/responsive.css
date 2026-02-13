@@ -1629,3 +1629,152 @@ img {
   }
 }
 
+/*===========cart=======*/
+
+/* ===========================
+   CART PAGE RESPONSIVE
+   Only Mobile + Tablet
+=========================== */
+
+@media (max-width: 992px){
+
+  .cart-table thead{
+    display:none;
+  }
+
+  .cart-table,
+  .cart-table tbody,
+  .cart-table tr,
+  .cart-table td{
+    display:block;
+    width:100%;
+  }
+
+  .cart-table tr{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:16px;
+  }
+
+  .cart-table td{
+    padding:8px 0 !important;
+    text-align:left !important;
+    border:none !important;
+  }
+
+  /* Product section */
+  .cart-table td:first-child > div{
+    display:flex !important;
+    gap:12px !important;
+    align-items:center !important;
+  }
+
+  .cart-table td:first-child img{
+    width:70px !important;
+    height:70px !important;
+    border-radius:10px !important;
+    object-fit:cover !important;
+  }
+
+  /* Qty, Price, Total, Remove layout */
+  .cart-table td:nth-child(2),
+  .cart-table td:nth-child(3),
+  .cart-table td:nth-child(4),
+  .cart-table td:nth-child(5){
+    display:flex !important;
+    justify-content:space-between !important;
+    align-items:center !important;
+    gap:10px;
+    font-size:15px;
+  }
+
+  /* Labels */
+  .cart-table td:nth-child(2)::before{
+    content:"Qty";
+    font-weight:700;
+  }
+  .cart-table td:nth-child(3)::before{
+    content:"Price";
+    font-weight:700;
+  }
+  .cart-table td:nth-child(4)::before{
+    content:"Total";
+    font-weight:700;
+  }
+  .cart-table td:nth-child(5)::before{
+    content:"Remove";
+    font-weight:700;
+  }
+
+  /* Qty input */
+  .cart-table input[type="number"]{
+    width:80px !important;
+    text-align:center;
+  }
+
+  /* Total section */
+  .cart-actions{
+    flex-direction:column !important;
+    align-items:stretch !important;
+    gap:14px !important;
+  }
+
+  .cart-total{
+    text-align:left;
+    font-size:18px !important;
+  }
+
+  /* Buttons row like your sketch */
+  .cart-actions > div:last-child{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    gap:10px !important;
+    justify-content:space-between !important;
+  }
+
+  .cart-actions > div:last-child a,
+  .cart-actions > div:last-child button{
+    flex:1;
+    text-align:center;
+    padding:10px 10px;
+    font-size:14px;
+    border-radius:12px;
+  }
+
+  /* Checkout button bigger */
+  .cart-actions > div:last-child .btn-primary{
+    flex:1.2;
+  }
+
+}
+
+/* ================= CART BUTTONS (MOBILE + TABLET) ================= */
+@media (max-width: 768px){
+
+  .cart-actions{
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .cart-actions a.btn,
+  .cart-actions button.btn{
+    padding: 8px 10px !important;
+    font-size: 10px !important;
+    border-radius: 10px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Make checkout button not too big */
+  .cart-actions a.btn.btn-primary{
+    padding: 8px 14px !important;
+    font-size: 10px !important;
+  }
+
+}
+
+

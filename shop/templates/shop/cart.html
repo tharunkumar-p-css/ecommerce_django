@@ -25,21 +25,36 @@
       {% for item in items %}
         <tr style="border-bottom:1px solid #eee;">
           <td style="padding:12px; vertical-align:middle;">
-            <div style="display:flex; align-items:center; gap:12px;">
-              {% if item.product.image %}
-                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width:68px;height:68px;object-fit:cover;border-radius:6px;">
-              {% else %}
-                <div style="width:68px;height:68px;background:#fafafa;border:1px solid #eee;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#999;">No image</div>
-              {% endif %}
+  <div style="display:flex; align-items:center; gap:12px;">
+    
+    {% if item.product.image %}
+      <img src="{{ item.product.image.url }}" 
+           alt="{{ item.product.name }}"
+           style="width:68px;height:68px;object-fit:cover;border-radius:6px;">
+    {% else %}
+      <div style="width:68px;height:68px;background:#fafafa;border:1px solid #eee;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#999;">
+        No image
+      </div>
+    {% endif %}
 
-              <div>
-                <strong style="display:block;font-size:15px;">{{ item.product.name }}</strong>
-                {% if item.product.category %}
-                  <small class="muted">{{ item.product.category.name }}</small>
-                {% endif %}
-              </div>
-            </div>
-            <div>
+    <div>
+      <strong style="display:block;font-size:15px;">
+        {{ item.product.name }}
+      </strong>
+
+      {% if item.size %}
+        <small style="display:block;color:#2563eb;">
+          Size: {{ item.size }}
+        </small>
+      {% endif %}
+
+      {% if item.product.category %}
+        <small class="muted">{{ item.product.category.name }}</small>
+      {% endif %}
+    </div>
+
+  </div>
+</td>
   <strong style="display:block;font-size:15px;">
     {{ item.product.name }}
   </strong>

@@ -1,3 +1,4 @@
+
 {% extends "shop/base.html" %}
 {% block content %}
 
@@ -236,6 +237,31 @@
 .support-box a:hover{
   background: #e2e8f0;
 }
+/* DESKTOP ONLY: Make left scroll, right sticky */
+@media (min-width: 992px){
+
+  .terms-layout{
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+  }
+
+  .terms-left{
+    width: 65%;
+    max-height: 75vh;   /* left will scroll inside this height */
+    overflow-y: auto;
+    padding-right: 10px;
+  }
+
+  .terms-right{
+    width: 35%;
+    position: sticky;
+    top: 110px;
+  }
+
+}
+
+
 </style>
 
 <div class="terms-wrap">
