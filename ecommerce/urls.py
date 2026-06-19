@@ -8,5 +8,8 @@ urlpatterns = [
     path('', include('shop.urls')),
 ]
 
+if settings.SOCIAL_LOGIN_ENABLED:
+    urlpatterns.insert(1, path('accounts/', include('allauth.urls')))
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

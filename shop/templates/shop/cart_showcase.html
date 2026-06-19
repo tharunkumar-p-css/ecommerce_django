@@ -1,0 +1,350 @@
+{% extends 'shop/base_shell.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  .cart-shell {
+    display: grid;
+    gap: 24px;
+  }
+
+  .cart-hero,
+  .cart-list,
+  .cart-summary,
+  .cart-empty {
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 30px;
+    background: rgba(255, 250, 243, 0.8);
+    box-shadow: 0 24px 50px rgba(24, 36, 45, 0.1);
+    backdrop-filter: blur(14px);
+  }
+
+  .cart-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(220px, 0.75fr);
+    gap: 18px;
+    padding: 30px;
+  }
+
+  .cart-kicker {
+    color: #8c654f;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .cart-hero h1 {
+    margin: 10px 0 0;
+    font-family: "Instrument Serif", serif;
+    font-size: clamp(40px, 5vw, 66px);
+    line-height: 0.95;
+  }
+
+  .cart-hero p {
+    margin: 16px 0 0;
+    max-width: 560px;
+    color: var(--muted);
+  }
+
+  .cart-stat {
+    padding: 20px;
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(248, 238, 230, 0.78));
+    border: 1px solid rgba(24, 36, 45, 0.08);
+    align-self: end;
+  }
+
+  .cart-stat span {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .cart-stat strong {
+    display: block;
+    margin-top: 10px;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 40px;
+  }
+
+  .cart-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+    gap: 22px;
+  }
+
+  .cart-list {
+    padding: 24px;
+  }
+
+  .cart-list h2,
+  .cart-summary h2,
+  .cart-empty h2 {
+    margin: 0;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 28px;
+  }
+
+  .cart-lines {
+    display: grid;
+    gap: 16px;
+    margin-top: 18px;
+  }
+
+  .cart-line {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr) 120px 100px;
+    gap: 16px;
+    align-items: center;
+    padding: 16px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(24, 36, 45, 0.08);
+  }
+
+  .cart-thumb {
+    display: grid;
+    place-items: center;
+    min-height: 110px;
+    padding: 12px;
+    border-radius: 20px;
+    background: linear-gradient(180deg, #fffefc, #f5ece1);
+  }
+
+  .cart-thumb img {
+    width: 100%;
+    height: 86px;
+    object-fit: contain;
+  }
+
+  .cart-copy h3 {
+    margin: 0;
+    font-size: 20px;
+    font-family: "Space Grotesk", sans-serif;
+  }
+
+  .cart-copy p,
+  .cart-copy small {
+    display: block;
+    margin-top: 6px;
+    color: var(--muted);
+  }
+
+  .qty-box label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .qty-box input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(24, 36, 45, 0.12);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.86);
+  }
+
+  .line-price {
+    text-align: right;
+  }
+
+  .line-price .single {
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .line-price strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 22px;
+  }
+
+  .remove-button {
+    padding: 10px 14px;
+    border: 1px solid rgba(24, 36, 45, 0.12);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .cart-summary {
+    padding: 24px;
+    height: fit-content;
+  }
+
+  .summary-stack {
+    display: grid;
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .summary-line,
+  .summary-total {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .summary-line {
+    color: var(--muted);
+  }
+
+  .summary-total {
+    padding-top: 14px;
+    border-top: 1px solid rgba(24, 36, 45, 0.08);
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  .summary-actions {
+    display: grid;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .staff-note {
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: rgba(255, 239, 236, 0.9);
+    color: #a3482c;
+    font-weight: 700;
+  }
+
+  .cart-empty {
+    padding: 36px 30px;
+    text-align: center;
+  }
+
+  .cart-empty p {
+    margin: 12px auto 0;
+    max-width: 480px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 991px) {
+    .cart-hero,
+    .cart-grid,
+    .cart-line {
+      grid-template-columns: 1fr;
+    }
+
+    .line-price {
+      text-align: left;
+    }
+  }
+</style>
+
+<div class="cart-shell">
+  <section class="cart-hero">
+    <div>
+      <div class="cart-kicker">Cart studio</div>
+      <h1>Your selections are staged and ready.</h1>
+      <p>Review quantities, keep the best pieces, and move into checkout without losing the curated flow.</p>
+    </div>
+
+    <div class="cart-stat">
+      <span>Items saved</span>
+      <strong>{{ items|length }}</strong>
+      <p class="muted">A cleaner bag view with stronger hierarchy and easier actions.</p>
+    </div>
+  </section>
+
+  {% if not items %}
+    <section class="cart-empty">
+      <h2>Your cart is empty</h2>
+      <p>Add a few products and this page becomes your styled staging area before checkout.</p>
+      <div style="margin-top:20px;">
+        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Continue shopping</a>
+      </div>
+    </section>
+  {% else %}
+    <div class="cart-grid">
+      <section class="cart-list">
+        <h2>Bag overview</h2>
+        <form id="cart-update-form" method="post" action="{% url 'shop:cart' %}">
+          {% csrf_token %}
+          <div class="cart-lines">
+            {% for item in items %}
+              <article class="cart-line">
+                <div class="cart-thumb">
+                  {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                  {% else %}
+                    <img src="{% static 'shop/placeholder.png' %}" alt="No image available">
+                  {% endif %}
+                </div>
+
+                <div class="cart-copy">
+                  <h3>{{ item.product.name }}</h3>
+                  <p>{{ item.product.category.name }}</p>
+                  {% if item.size %}
+                    <small>Size {{ item.size }}</small>
+                  {% endif %}
+                </div>
+
+                <div class="qty-box">
+                  <label for="qty_{{ item.id }}">Quantity</label>
+                  <input id="qty_{{ item.id }}" type="number" name="qty_{{ item.id }}" value="{{ item.quantity }}" min="0">
+                </div>
+
+                <div class="line-price">
+                  <div class="single">Unit Rs. {{ item.product.get_display_price }}</div>
+                  <strong>Rs. {{ item.total_price }}</strong>
+                  <button type="submit" form="remove-item-{{ item.id }}" class="remove-button">Remove</button>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        </form>
+
+        {% for item in items %}
+          <form id="remove-item-{{ item.id }}" method="post" action="{% url 'shop:cart_remove' item.id %}">
+            {% csrf_token %}
+          </form>
+        {% endfor %}
+      </section>
+
+      <aside class="cart-summary">
+        <h2>Summary</h2>
+        <div class="summary-stack">
+          <div class="summary-line">
+            <span>Products</span>
+            <span>{{ items|length }}</span>
+          </div>
+          <div class="summary-line">
+            <span>Delivery</span>
+            <span>Free</span>
+          </div>
+          <div class="summary-line">
+            <span>Adjust quantities</span>
+            <span>Live on update</span>
+          </div>
+          <div class="summary-total">
+            <span>Total</span>
+            <span>Rs. {{ total }}</span>
+          </div>
+        </div>
+
+        <div class="summary-actions">
+          <button type="submit" form="cart-update-form" class="btn btn-secondary">Update cart</button>
+          <a href="{% url 'shop:product_list' %}" class="btn btn-ghost">Keep browsing</a>
+          {% if user.is_staff %}
+            <div class="staff-note">Admin accounts can review the cart but cannot place orders.</div>
+          {% else %}
+            <a href="{% url 'shop:checkout' %}" class="btn btn-primary">Go to checkout</a>
+          {% endif %}
+        </div>
+      </aside>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

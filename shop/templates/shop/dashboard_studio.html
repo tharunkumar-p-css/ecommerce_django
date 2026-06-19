@@ -1,0 +1,230 @@
+{% extends "shop/base_shell.html" %}
+
+{% block content %}
+<style>
+  .dashboard-shell {
+    display: grid;
+    gap: 24px;
+  }
+
+  .dashboard-hero,
+  .dashboard-card {
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 30px;
+    background: rgba(255, 250, 243, 0.8);
+    box-shadow: 0 24px 50px rgba(24, 36, 45, 0.1);
+    backdrop-filter: blur(14px);
+  }
+
+  .dashboard-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
+    gap: 20px;
+    padding: 32px;
+  }
+
+  .dashboard-kicker {
+    color: #8c654f;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .dashboard-hero h1 {
+    margin: 10px 0 0;
+    font-family: "Instrument Serif", serif;
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 0.95;
+  }
+
+  .dashboard-hero p {
+    margin: 14px 0 0;
+    max-width: 560px;
+    color: var(--muted);
+  }
+
+  .dashboard-badge {
+    align-self: end;
+    padding: 20px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #17313f, #244b60);
+    color: #fff9f5;
+  }
+
+  .dashboard-badge span {
+    display: block;
+    color: rgba(255, 249, 245, 0.72);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .dashboard-badge strong {
+    display: block;
+    margin-top: 10px;
+    font-size: 28px;
+    font-family: "Space Grotesk", sans-serif;
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(0, 0.8fr));
+    gap: 22px;
+  }
+
+  .dashboard-card {
+    padding: 24px;
+  }
+
+  .dashboard-card h2 {
+    margin: 0;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 26px;
+  }
+
+  .dashboard-card p {
+    margin: 10px 0 0;
+    color: var(--muted);
+  }
+
+  .profile-form {
+    display: grid;
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .profile-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .profile-field input,
+  .profile-field textarea {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid rgba(24, 36, 45, 0.12);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.88);
+  }
+
+  .profile-field textarea {
+    min-height: 110px;
+    resize: vertical;
+  }
+
+  .action-card {
+    display: grid;
+    gap: 16px;
+    align-content: space-between;
+  }
+
+  .action-meta {
+    color: #8c654f;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 991px) {
+    .dashboard-hero,
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .profile-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="dashboard-shell">
+  <section class="dashboard-hero">
+    <div>
+      <div class="dashboard-kicker">Customer studio</div>
+      <h1>Welcome back, {{ user.first_name|default:user.username }}.</h1>
+      <p>Manage your account details, move into the bag, and jump straight into order tracking from one polished control center.</p>
+    </div>
+
+    <div class="dashboard-badge">
+      <span>Dashboard mode</span>
+      <strong>Profile + commerce</strong>
+      <p class="muted" style="color:rgba(255,249,245,0.72); margin-top:10px;">A cleaner account page with sharper hierarchy and easier next actions.</p>
+    </div>
+  </section>
+
+  <section class="dashboard-grid">
+    <article class="dashboard-card">
+      <h2>Profile settings</h2>
+      <p>Keep your address and contact details ready for faster checkout.</p>
+
+      <form method="post" class="profile-form">
+        {% csrf_token %}
+
+        <div class="profile-grid">
+          <div class="profile-field">
+            <label for="profile-name">Name</label>
+            <input id="profile-name" type="text" name="name" value="{{ user.first_name|default:user.username }}">
+          </div>
+
+          <div class="profile-field">
+            <label for="profile-email">Email</label>
+            <input id="profile-email" type="email" name="email" value="{{ user.email }}">
+          </div>
+        </div>
+
+        <div class="profile-field">
+          <label for="profile-address">Address</label>
+          <textarea id="profile-address" name="address">{{ profile.address }}</textarea>
+        </div>
+
+        <div class="profile-field">
+          <label for="profile-phone">Phone</label>
+          <input id="profile-phone" type="text" name="phone_number" value="{{ profile.phone_number }}">
+        </div>
+
+        <div>
+          <button type="submit" class="btn btn-primary">Save profile</button>
+        </div>
+      </form>
+    </article>
+
+    <article class="dashboard-card action-card">
+      <div>
+        <div class="action-meta">Bag</div>
+        <h2>Your cart</h2>
+        <p>Jump back into the pieces you shortlisted and keep the checkout flow moving.</p>
+      </div>
+      <div>
+        <a href="{% url 'shop:cart' %}" class="btn btn-secondary">Open cart</a>
+      </div>
+    </article>
+
+    <article class="dashboard-card action-card">
+      <div>
+        <div class="action-meta">Tracking</div>
+        <h2>Your orders</h2>
+        <p>Follow delivery progress, manage returns, and request exchanges from the timeline view.</p>
+      </div>
+      <div>
+        <a href="{% url 'shop:user_orders' %}" class="btn btn-secondary">View orders</a>
+      </div>
+    </article>
+  </section>
+</div>
+{% endblock %}

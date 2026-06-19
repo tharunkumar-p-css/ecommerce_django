@@ -1,4 +1,4 @@
-{% extends 'shop/base.html' %}
+{% extends 'shop/base_shell.html' %}
 {% load static %}
 
 {% block extra_css %}
@@ -40,6 +40,41 @@
         <div class="price-big">₹{{ product.price }}</div>
       {% endif %}
     </div>
+
+    <!-- ================= VARIANT COLORS (AMAZON STYLE) ================= -->
+    {% if product.variant_group %}
+      <div class="variant-box">
+        <h4 class="variant-title">Colour:</h4>
+
+        <div class="variant-grid">
+
+          <!-- Current Product -->
+          <a href="{{ product.get_absolute_url }}" class="variant-card active">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" alt="{{ product.color }}">
+            {% else %}
+              <img src="{% static 'shop/placeholder.png' %}" alt="No image">
+            {% endif %}
+            <p>{{ product.color|default:"Default" }}</p>
+          </a>
+
+          <!-- Other Colors -->
+          {% for v in variants %}
+            <a href="{{ v.get_absolute_url }}" class="variant-card">
+              {% if v.image %}
+                <img src="{{ v.image.url }}" alt="{{ v.color }}">
+              {% else %}
+                <img src="{% static 'shop/placeholder.png' %}" alt="No image">
+              {% endif %}
+              <p>{{ v.color|default:"Color" }}</p>
+            </a>
+          {% empty %}
+          {% endfor %}
+
+        </div>
+      </div>
+    {% endif %}
+    <!-- ================= END VARIANT COLORS ================= -->
 
     <p class="desc">{{ product.description|linebreaksbr }}</p>
 
@@ -179,40 +214,40 @@
     </div>
 
     <!-- REVIEW FORM -->
-{% if user.is_authenticated %}
-<form method="post" class="review-form">
-  {% csrf_token %}
-  <input type="hidden" name="action" value="review">
+    {% if user.is_authenticated %}
+    <form method="post" class="review-form">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="review">
 
-  <!-- Write Review + Post -->
-  <div class="review-row">
-    <input type="text" name="comment_text" placeholder="Write a review..." required>
-    <button type="submit">Post</button>
-  </div>
+      <!-- Write Review + Post -->
+      <div class="review-row">
+        <input type="text" name="comment_text" placeholder="Write a review..." required>
+        <button type="submit">Post</button>
+      </div>
 
-  <div class="rating-input">
+      <div class="rating-input">
 
-  <input type="radio" id="star1" name="rating" value="1" required>
-  <label for="star1">★</label>
+        <input type="radio" id="star1" name="rating" value="1" required>
+        <label for="star1">★</label>
 
-  <input type="radio" id="star2" name="rating" value="2">
-  <label for="star2">★</label>
+        <input type="radio" id="star2" name="rating" value="2">
+        <label for="star2">★</label>
 
-  <input type="radio" id="star3" name="rating" value="3">
-  <label for="star3">★</label>
+        <input type="radio" id="star3" name="rating" value="3">
+        <label for="star3">★</label>
 
-  <input type="radio" id="star4" name="rating" value="4">
-  <label for="star4">★</label>
+        <input type="radio" id="star4" name="rating" value="4">
+        <label for="star4">★</label>
 
-  <input type="radio" id="star5" name="rating" value="5">
-  <label for="star5">★</label>
+        <input type="radio" id="star5" name="rating" value="5">
+        <label for="star5">★</label>
 
-</div>
+      </div>
 
-</form>
-{% else %}
-<p>Please login to write a review.</p>
-{% endif %}
+    </form>
+    {% else %}
+    <p>Please login to write a review.</p>
+    {% endif %}
 
     <!-- REVIEWS LIST -->
     {% for comment in comments %}

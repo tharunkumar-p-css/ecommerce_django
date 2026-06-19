@@ -1,4 +1,4 @@
-{% extends "shop/base.html" %}
+{% extends "shop/base_shell.html" %}
 {% load static %}
 
 {% block content %}
@@ -27,9 +27,15 @@
 /* GRID */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: 1.4fr 1fr 1fr; /* Profile bigger */
   gap: 22px;
-  align-items: stretch; /* 🔥 IMPORTANT */
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* CARD */
@@ -39,10 +45,8 @@
   padding: 22px;
   border: 1px solid #e5e7eb;
   box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* 🔥 SAME HEIGHT */
   transition: transform .25s ease, box-shadow .25s ease;
+  height: fit-content; /* 🔥 Important fix */
 }
 
 .dash-card:hover {
@@ -50,7 +54,6 @@
   box-shadow: 0 18px 40px rgba(0,0,0,0.08);
 }
 
-/* HEADER */
 .dash-card-head {
   display: flex;
   align-items: center;
@@ -74,22 +77,14 @@
   font-size: 16px;
 }
 
-/* TEXT */
 .dash-text {
   font-size: 14px;
   color: #475569;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
-.muted {
-  color: #94a3b8;
-  font-size: 13px;
-}
-
-/* ACTION BUTTON */
 .dash-action {
-  margin-top: 14px;
-  align-self: flex-start;
+  display: inline-block;
   padding: 10px 16px;
   font-size: 13px;
   font-weight: 600;
@@ -97,67 +92,110 @@
   text-decoration: none;
   background: #1e6cf0;
   color: #fff;
+  border: none;
+  cursor: pointer;
 }
 
 .dash-action:hover {
   background: #174fb6;
-  text-decoration: none;
 }
 </style>
 
 <div class="dashboard-wrap">
 
-  <!-- HEADER -->
   <div class="dashboard-header">
     <h1>Welcome, {{ user.first_name|default:user.username }}</h1>
     <p>Manage your account, cart and orders from here</p>
   </div>
 
-  <!-- GRID -->
   <div class="dashboard-grid">
 
-    <!-- PROFILE -->
+    <!-- PROFILE CARD -->
     <div class="dash-card">
-      <div>
-        <div class="dash-card-head">
-          <div class="dash-icon">👤</div>
-          <div class="dash-title">Profile</div>
-        </div>
 
-        <div class="dash-text"><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</div>
-        <div class="dash-text"><strong>Email:</strong> {{ user.email }}</div>
-      </div>
-    </div>
-
-    <!-- CART -->
-    <div class="dash-card">
-      <div>
-        <div class="dash-card-head">
-          <div class="dash-icon">🛒</div>
-          <div class="dash-title">Your Cart</div>
-        </div>
-
-        <div class="dash-text">View products you added to cart</div>
+      <div class="dash-card-head">
+        <div class="dash-icon">👤</div>
+        <div class="dash-title">Profile Information</div>
       </div>
 
-      <a href="{% url 'shop:cart' %}" class="dash-action">Go to Cart</a>
-    </div>
+      <form method="POST">
+        {% csrf_token %}
 
-    <!-- ORDERS -->
-    <div class="dash-card">
-      <div>
-        <div class="dash-card-head">
-          <div class="dash-icon">📦</div>
-          <div class="dash-title">Orders</div>
+        <div class="dash-text">
+          <label><strong>Name</strong></label>
+          <input type="text"
+                 name="name"
+                 value="{{ user.first_name|default:user.username }}"
+                 class="form-control">
         </div>
 
-        <div class="dash-text">Track and manage your orders</div>
-        <div class="muted">View order history</div>
+        <div class="dash-text">
+          <label><strong>Email</strong></label>
+          <input type="email"
+                 name="email"
+                 value="{{ user.email }}"
+                 class="form-control">
+        </div>
+
+        <hr>
+
+        <div class="dash-text">
+          <label><strong>Address</strong></label>
+          <textarea name="address"
+                    rows="2"
+                    class="form-control">{{ profile.address }}</textarea>
+        </div>
+
+        <div class="dash-text">
+          <label><strong>Phone Number</strong></label>
+          <input type="text"
+                 name="phone_number"
+                 value="{{ profile.phone_number }}"
+                 class="form-control">
+        </div>
+
+        <button type="submit" class="dash-action">
+          Save Changes
+        </button>
+
+      </form>
+
+    </div>
+
+    <!-- CART CARD (NOW NORMAL HEIGHT) -->
+    <div class="dash-card">
+
+      <div class="dash-card-head">
+        <div class="dash-icon">🛒</div>
+        <div class="dash-title">Your Cart</div>
+      </div>
+
+      <div class="dash-text">
+        View products you added to cart
+      </div>
+
+      <a href="{% url 'shop:cart' %}" class="dash-action">
+        Go to Cart
+      </a>
+
+    </div>
+
+    <!-- ORDERS CARD (NOW NORMAL HEIGHT) -->
+    <div class="dash-card">
+
+      <div class="dash-card-head">
+        <div class="dash-icon">📦</div>
+        <div class="dash-title">Orders</div>
+      </div>
+
+      <div class="dash-text">
+        Track and manage your orders
       </div>
 
       <a href="{% url 'shop:user_orders' %}" class="dash-action">
         View Orders
       </a>
+
     </div>
 
   </div>

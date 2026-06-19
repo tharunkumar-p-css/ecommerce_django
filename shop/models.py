@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 from django.conf import settings
 
 User = get_user_model()
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # ================= CATEGORY =================
 
@@ -15,7 +17,7 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = "Categories"
 
-    def str(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
@@ -36,11 +38,13 @@ class Product(models.Model):
 
     is_on_offer = models.BooleanField(default=False)
     offer_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    variant_group = models.CharField(max_length=100, blank=True, null=True)
+    color = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         ordering = ('-created_at',)
 
-    def str(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
@@ -75,7 +79,7 @@ class CartItem(models.Model):
     def total_price(self):
         return self.product.get_display_price() * self.quantity
 
-    def str(self):
+    def __str__(self):
         return f"{self.product.name} × {self.quantity} ({self.size or 'No size'})"
 
 
@@ -88,6 +92,7 @@ class Order(models.Model):
     name = models.CharField(max_length=200)
     address = models.TextField()
     email = models.EmailField()
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
 
     PAYMENT_CHOICES = (
         ('cod', 'Cash on Delivery'),
@@ -143,7 +148,7 @@ class Order(models.Model):
     default='PENDING'
 )
 
-    def str(self):
+    def __str__(self):
         return f"Order #{self.id}"
 
 
@@ -157,7 +162,7 @@ class OrderItem(models.Model):
 
     size = models.CharField(max_length=10, blank=True, null=True)  # 👟 ADD THIS
 
-    def str(self):
+    def __str__(self):
         return f"{self.product.name} × {self.quantity} ({self.size or 'No size'})"
 
 
@@ -172,7 +177,7 @@ class Wishlist(models.Model):
     class Meta:
         unique_together = ('user', 'session_key', 'product')
 
-    def str(self):
+    def __str__(self):
         return f"Wishlist: {self.product.name}"
 
 
@@ -186,7 +191,7 @@ class PriceDropAlert(models.Model):
     is_triggered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def str(self):
+    def __str__(self):
         return f"Price alert for {self.product.name}"
 
 
@@ -210,7 +215,7 @@ class OfferAd(models.Model):
     class Meta:
         ordering = ('-created_at',)
 
-    def str(self):
+    def __str__(self):
         return f"{self.title} ({self.position})"
     
 
@@ -224,5 +229,26 @@ class ProductComment(models.Model):
     class Meta:
         ordering = ['-created_at']
 
-    def str(self):
+    def __str__(self):
         return f"{self.user} - {self.product.name}"
+    
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    address = models.TextField(blank=True, null=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+
+    def __str__(self):
+        return self.user.username
+
+
+# ================= PROFILE SIGNALS =================
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.get_or_create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    Profile.objects.get_or_create(user=instance)

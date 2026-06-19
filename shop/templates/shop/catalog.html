@@ -1,0 +1,340 @@
+{% extends "shop/base_shell.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'shop/catalog.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="catalog-shell">
+  {% if order_placed %}
+    <div class="catalog-message success">
+      Your order was placed successfully. You can keep browsing from the refreshed catalog.
+    </div>
+  {% endif %}
+
+  {% if offers_page %}
+    <div class="catalog-message accent">
+      Offer mode is active. You are browsing products with live markdown pricing.
+    </div>
+  {% endif %}
+
+  {% if offer_ads %}
+    <section class="offer-wrapper" aria-label="Active offers">
+      <div class="offer-slider">
+        {% for ad in offer_ads %}
+          <article class="offer-card">
+            <div class="offer-copy">
+              <span class="offer-badge">Limited offer</span>
+              <h2>{{ ad.title }}</h2>
+              <p>{{ ad.subtitle }}</p>
+              {% if ad.end_date %}
+                <div class="offer-countdown" data-end="{{ ad.end_date|date:'Y-m-d H:i:s' }}"></div>
+              {% endif %}
+            </div>
+            <div class="offer-art">Deal Zone</div>
+          </article>
+        {% endfor %}
+        {% for ad in offer_ads %}
+          <article class="offer-card">
+            <div class="offer-copy">
+              <span class="offer-badge">Limited offer</span>
+              <h2>{{ ad.title }}</h2>
+              <p>{{ ad.subtitle }}</p>
+              {% if ad.end_date %}
+                <div class="offer-countdown" data-end="{{ ad.end_date|date:'Y-m-d H:i:s' }}"></div>
+              {% endif %}
+            </div>
+            <div class="offer-art">Deal Zone</div>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  <section class="catalog-hero">
+    <div class="hero-copy">
+      <div class="hero-kicker">
+        {% if category %}
+          Category spotlight
+        {% elif offers_page %}
+          Deal storefront
+        {% else %}
+          Professional marketplace
+        {% endif %}
+      </div>
+
+      <h1>
+        {% if category %}
+          {{ category.name }} arranged with cleaner hierarchy and faster product discovery.
+        {% elif offers_page %}
+          A sharper deals page with clearer pricing and offer-led merchandising.
+        {% else %}
+          Shop a more professional storefront inspired by modern marketplaces.
+        {% endif %}
+      </h1>
+
+      <p>
+        {% if request.GET.q %}
+          Search results for "{{ request.GET.q }}" are presented with stronger structure, clearer actions, and cleaner pricing.
+        {% else %}
+          FunnelWeb now feels more like a real shopping destination with better search emphasis, bolder category flow, and cards that are easier to scan.
+        {% endif %}
+      </p>
+
+      <div class="hero-metrics">
+        <span>{{ products|length }} product{{ products|length|pluralize }} live</span>
+        <span>{{ categories|length }} department{{ categories|length|pluralize }}</span>
+        <span>{% if offers_page %}Deals only{% else %}Fresh catalog refresh{% endif %}</span>
+      </div>
+
+      <div class="hero-actions">
+        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Browse all products</a>
+        <a href="{% url 'shop:offers' %}" class="btn btn-secondary">View today's deals</a>
+      </div>
+
+      <div class="hero-benefits">
+        <article class="hero-benefit-card">
+          <span>Why it feels better</span>
+          <strong>Sharper discovery</strong>
+          <p>Search, categories, and top actions are easier to use at a glance.</p>
+        </article>
+
+        <article class="hero-benefit-card">
+          <span>Built for trust</span>
+          <strong>Cleaner pricing</strong>
+          <p>Offer cues, product hierarchy, and CTAs now read more like a real marketplace.</p>
+        </article>
+
+        <article class="hero-benefit-card">
+          <span>Checkout ready</span>
+          <strong>Faster buying flow</strong>
+          <p>Pages now push users more clearly from browsing to product detail to checkout.</p>
+        </article>
+      </div>
+    </div>
+
+    <div class="hero-showcase">
+      {% with feature=products|first %}
+        {% if feature %}
+          <article class="hero-feature-card">
+            <div class="hero-feature-copy">
+              <span>Featured right now</span>
+              <h2><a href="{{ feature.get_absolute_url }}">{{ feature.name }}</a></h2>
+              <p>{{ feature.description|default:"Well-presented product card with cleaner pricing and stronger visual focus."|truncatewords:16 }}</p>
+              <div class="hero-feature-price">
+                {% if feature.has_offer %}
+                  <strong>Rs. {{ feature.get_display_price }}</strong>
+                  <small>Rs. {{ feature.price }}</small>
+                {% else %}
+                  <strong>Rs. {{ feature.price }}</strong>
+                {% endif %}
+              </div>
+            </div>
+
+            <a href="{{ feature.get_absolute_url }}" class="hero-feature-image">
+              {% if feature.image %}
+                <img src="{{ feature.image.url }}" alt="{{ feature.name }}" loading="lazy">
+              {% else %}
+                <img src="{% static 'shop/placeholder.png' %}" alt="No image available" loading="lazy">
+              {% endif %}
+            </a>
+          </article>
+        {% endif %}
+      {% endwith %}
+
+      <div class="hero-stats">
+        <article class="hero-stat-card">
+          <span>Live catalog</span>
+          <strong>{{ products|length }}</strong>
+          <p>Merchandised cards ready for browsing.</p>
+        </article>
+
+        <article class="hero-stat-card">
+          <span>Post-purchase support</span>
+          <strong>7 days</strong>
+          <p>Returns and exchanges are clearly surfaced.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  {% if categories %}
+    <section class="catalog-categories">
+      <a href="{% url 'shop:product_list' %}" class="category-chip {% if not category %}active{% endif %}">All</a>
+      {% for cat in categories %}
+        <a href="{{ cat.get_absolute_url }}" class="category-chip {% if category and category.id == cat.id %}active{% endif %}">
+          {{ cat.name }}
+        </a>
+      {% endfor %}
+    </section>
+  {% endif %}
+
+  <section class="catalog-ribbon">
+    <article class="ribbon-card">
+      <span>Marketplace cue</span>
+      <strong>Protected checkout</strong>
+      <p>Buying actions and pricing hierarchy are clearer throughout the catalog.</p>
+    </article>
+
+    <article class="ribbon-card">
+      <span>Catalog quality</span>
+      <strong>Better product scanning</strong>
+      <p>Cards, badges, and CTA placement now feel more consistent and intentional.</p>
+    </article>
+
+    <article class="ribbon-card">
+      <span>After purchase</span>
+      <strong>Orders stay visible</strong>
+      <p>Tracking, returns, and exchange flows remain easy to discover after checkout.</p>
+    </article>
+  </section>
+
+  <section class="catalog-toolbar">
+    <div>
+      <div class="toolbar-label">Current aisle</div>
+      <h2>
+        {% if category %}
+          {{ category.name }}
+        {% elif offers_page %}
+          Offer collection
+        {% else %}
+          Latest catalog picks
+        {% endif %}
+      </h2>
+      <p>
+        {% if request.GET.q %}
+          Results for "{{ request.GET.q }}" in the current storefront selection.
+        {% else %}
+          {{ products|length }} product{{ products|length|pluralize }} ready to explore.
+        {% endif %}
+      </p>
+    </div>
+
+    <form method="get" class="catalog-sort">
+      {% if request.GET.q %}
+        <input type="hidden" name="q" value="{{ request.GET.q }}">
+      {% endif %}
+      <label for="catalogSort">Sort by</label>
+      <select id="catalogSort" name="sort" onchange="this.form.submit()">
+        <option value="">Newest first</option>
+        <option value="price_asc" {% if request.GET.sort == "price_asc" %}selected{% endif %}>Price: low to high</option>
+        <option value="price_desc" {% if request.GET.sort == "price_desc" %}selected{% endif %}>Price: high to low</option>
+        <option value="new" {% if request.GET.sort == "new" %}selected{% endif %}>Fresh arrivals</option>
+      </select>
+    </form>
+  </section>
+
+  {% if products %}
+    <section class="catalog-highlights">
+      <article class="highlight-lead">
+        <div class="highlight-lead__eyebrow">Merchandising lane</div>
+        <h2>Featured picks that make the storefront easier to browse.</h2>
+        <p>These quick-entry cards create a more marketplace-like feel before the main grid begins.</p>
+      </article>
+
+      {% for product in products|slice:":3" %}
+        <a href="{{ product.get_absolute_url }}" class="highlight-product">
+          <span class="highlight-product__tag">{% if product.has_offer %}Deal live{% else %}Top pick{% endif %}</span>
+          <div class="highlight-product__media">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+            {% else %}
+              <img src="{% static 'shop/placeholder.png' %}" alt="No image available" loading="lazy">
+            {% endif %}
+          </div>
+          <div class="highlight-product__copy">
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.category.name }}</p>
+            <strong>Rs. {{ product.get_display_price }}</strong>
+          </div>
+        </a>
+      {% endfor %}
+    </section>
+  {% endif %}
+
+  <section class="product-grid">
+    {% for product in products %}
+      <article class="product-card">
+        <div class="product-card-top">
+          <div class="product-badge-row">
+            {% if product.has_offer %}
+              <span class="offer-chip">Offer</span>
+            {% endif %}
+            {% if forloop.counter <= 4 %}
+              <span class="trending-chip">Popular</span>
+            {% endif %}
+          </div>
+          <span class="product-stock">{% if product.available %}Ready to ship{% else %}Unavailable{% endif %}</span>
+        </div>
+
+        <a href="{{ product.get_absolute_url }}" class="product-image-wrap">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+          {% else %}
+            <img src="{% static 'shop/placeholder.png' %}" alt="No image available" loading="lazy">
+          {% endif %}
+        </a>
+
+        <div class="product-copy">
+          <div class="product-meta">
+            <span class="product-eyebrow">{{ product.category.name }}</span>
+            {% if product.has_offer %}
+              <span class="product-save">{{ product.discount_percent }}% off</span>
+            {% endif %}
+          </div>
+          <h3><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+          <p>{{ product.description|default:"Professional storefront card with clearer product hierarchy."|truncatewords:16 }}</p>
+
+          <div class="price-row">
+            {% if product.has_offer %}
+              <span class="price price-offer">Rs. {{ product.get_display_price }}</span>
+              <span class="old-price">Rs. {{ product.price }}</span>
+            {% else %}
+              <span class="price">Rs. {{ product.price }}</span>
+            {% endif %}
+          </div>
+
+          <div class="product-tags">
+            <span>Secure checkout</span>
+            <span>Easy returns</span>
+          </div>
+        </div>
+
+        <div class="product-actions">
+          <button type="button" class="btn btn-ghost quick-view" data-slug="{{ product.slug }}">Quick look</button>
+          <a href="{{ product.get_absolute_url }}" class="view-btn">View details</a>
+        </div>
+      </article>
+    {% empty %}
+      <div class="catalog-empty">
+        <h3>No products found</h3>
+        <p>Try another search or switch categories to explore more of the catalog.</p>
+      </div>
+    {% endfor %}
+  </section>
+</div>
+
+<script>
+  document.querySelectorAll('.offer-countdown').forEach(function (element) {
+    const end = new Date(element.dataset.end).getTime();
+
+    function tick() {
+      const diff = end - Date.now();
+
+      if (diff <= 0) {
+        element.textContent = 'Offer closed';
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      element.textContent = days + 'd ' + hours + 'h ' + minutes + 'm left';
+    }
+
+    tick();
+    setInterval(tick, 60000);
+  });
+</script>
+{% endblock %}

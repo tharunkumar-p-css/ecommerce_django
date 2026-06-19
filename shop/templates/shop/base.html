@@ -1,5 +1,5 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -33,157 +33,163 @@
 
     /* Keep your container style */
  
-
-    /* Header layout */
-    .topbar {
+    /* ============================= */
+    /* ✅ AMAZON STYLE NAVBAR        */
+    /* ============================= */
+    .amz-header {
+      background-color: #131921;
+      color: white;
+    }
+    .amz-top-row {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
+      padding: 10px 16px;
       gap: 16px;
-      padding: 18px 0;
+      flex-wrap: wrap;
     }
-
-    .brand-row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      width: 100%;
-    }
-
-    .logo {
+    .amz-logo {
+      color: white;
+      font-size: 22px;
       font-weight: 800;
-      font-size: 20px;
       text-decoration: none;
-      color: var(--text-color);
       white-space: nowrap;
-    }
-
-    .search {
       display: flex;
       align-items: center;
-      gap: 8px;
+    }
+    .amz-logo:hover { color: white; text-decoration: none; }
+
+    .amz-search-form {
+      display: flex;
+      flex: 1 1 auto;
+      min-width: 250px;
+      height: 40px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .amz-search-input {
       flex: 1;
+      padding: 0 12px;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      color: #111;
     }
-
-    .search input {
-      padding: 10px 12px;
-      border-radius: 20px;
-      border: 1px solid #e6e6e6;
-      width: 100%;
-      max-width: 420px;
+    .amz-search-btn {
+      background-color: #febd69;
+      border: none;
+      padding: 0 16px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      color: #111;
     }
+    .amz-search-btn:hover { background-color: #f3a847; }
 
-    /* Top nav */
-    .nav-actions {
+    .amz-nav-links {
       display: flex;
       align-items: center;
       gap: 12px;
     }
-
-    .nav-link {
+    .amz-nav-item {
+      color: white;
       text-decoration: none;
-      color: var(--text-color);
-      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       padding: 6px 8px;
-      border-radius: 8px;
+      border: 1px solid transparent;
+      border-radius: 2px;
+    }
+    .amz-nav-item:hover {
+      border: 1px solid white;
+      color: white;
+      text-decoration: none;
+    }
+    .amz-nav-item small {
+      font-size: 12px;
+      color: #ccc;
+      line-height: 1.2;
+    }
+    .amz-nav-item strong {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.2;
     }
 
-    .nav-link:hover { color: var(--accent); }
+    .amz-cart {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 6px 8px;
+      border: 1px solid transparent;
+      color: white;
+      text-decoration: none;
+    }
+    .amz-cart:hover { border: 1px solid white; color: white; text-decoration: none; }
+    .amz-cart span { font-size: 24px; line-height: 1; }
 
-    .offers-pill {
-      background: linear-gradient(90deg,#fff6f8,#fff2f6);
-      border: 1px solid #ffd7e0;
-      color: #b91c1c;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-weight: 800;
+    .amz-bottom-row {
+      background-color: #232f3e;
+      padding: 6px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .amz-bottom-link {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 4px 6px;
+      border: 1px solid transparent;
+    }
+    .amz-bottom-link:hover {
+      border: 1px solid white;
+      color: white;
+      text-decoration: none;
     }
 
-    /* categories dropdown */
     .dropdown { position: relative; }
-
     .dropdown-toggle {
       background: transparent;
       border: 0;
-      font-weight: 700;
+      color: white;
+      font-weight: 600;
       cursor: pointer;
-      padding: 6px 8px;
-      font-size: 15px;
+      font-size: 14px;
+      padding: 4px 6px;
+      border: 1px solid transparent;
     }
-
+    .dropdown-toggle:hover { border: 1px solid white; }
     .dropdown-menu {
       position: absolute;
-      right: 0;
-      top: calc(100% + 8px);
-      min-width: 220px;
+      left: 0;
+      top: calc(100% + 4px);
+      min-width: 200px;
       background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(11,24,64,0.12);
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       padding: 8px 0;
       display: none;
       z-index: 999;
     }
-
     .dropdown.open .dropdown-menu { display: block; }
-
-    .dropdown-menu li { list-style: none; }
-
+    .dropdown-menu li { list-style: none; margin: 0; }
     .dropdown-menu a {
       display: block;
-      padding: 10px 14px;
-      color: #222;
+      padding: 8px 16px;
+      color: #111;
       text-decoration: none;
+      font-size: 14px;
     }
-
     .dropdown-menu a:hover {
-      background: rgba(11,108,255,0.06);
-      color: var(--accent);
-    }
-
-    /* Common nav button style (like Offers) */
-    .nav-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px 18px;
-      border-radius: 999px;
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      line-height: 1;
-      transition: all 0.2s ease;
-    }
-
-    /* Login button */
-    .nav-btn-login {
-      background: #ffffff;
-      color: #1e293b;
-      border: 1px solid #d0d7de;
-    }
-
-    .nav-btn-login:hover {
-      background: #f1f5f9;
-      border-color: #94a3b8;
-      text-decoration: none;
-    }
-
-    /* Common tab */
-    .nav-tab {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #1e293b;
-      text-decoration: none;
-      border-radius: 6px;
-      transition: all 0.2s ease;
-    }
-
-    .nav-tab:hover {
-      background: #f1f5f9;
-      text-decoration: none;
+      background: #f3f4f6;
+      color: #111;
     }
 
     /* Footer */
@@ -227,76 +233,10 @@
     html, body { overflow-x: hidden; }
     img { max-width: 100%; height: auto; }
 
-    /* Desktop: keep navbar items in one line */
-    @media (min-width: 992px) {
-      .nav-actions {
-        flex-wrap: nowrap;
-        white-space: nowrap;
-      }
-    }
-
     /* Mobile/Tablet */
-    @media (max-width: 991px) {
-
-      .topbar {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-      }
-
-      .brand-row {
-        width: 100%;
-        gap: 10px;
-      }
-
-      .search {
-        flex: 1;
-        width: 100%;
-      }
-
-      .search input {
-        width: 100%;
-        max-width: none;
-      }
-
-      /* Menu items vertical */
-      .nav-actions {
-        flex-direction: column;
-        align-items: flex-start;
-        width: 100%;
-        gap: 10px;
-        padding-top: 10px;
-      }
-
-      .nav-actions a,
-      .nav-actions button {
-        width: 100%;
-        text-align: left;
-      }
-
-      /* Dropdown menu full width */
-      .dropdown-menu {
-        right: 8px;
-        left: 8px;
-        min-width: auto;
-      }
-    }
-
-    /* Hamburger button */
-    .navbar-toggler {
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 10px 12px;
-      background: #fff;
-    }
-
-    .navbar-toggler:focus {
-      box-shadow: none;
-    }
-
-    /* IMPORTANT: make bootstrap icon visible */
-    .navbar-toggler-icon {
-      background-image: var(--bs-navbar-toggler-icon-bg);
+    @media (max-width: 768px) {
+      .amz-top-row { gap: 10px; padding: 10px; }
+      .amz-search-form { order: 3; width: 100%; min-width: 100%; margin-top: 4px; }
     }
 
   </style>
@@ -304,87 +244,75 @@
 
 <body>
 
-  <header class="site-header">
+  <header class="site-header amz-header">
+    <div class="amz-top-row container">
+      <a href="{% url 'shop:product_list' %}" class="amz-logo">🛒 FUNNELWEB</a>
 
-    <!-- ✅ navbar-light is IMPORTANT -->
-    <nav class="navbar navbar-expand-lg navbar-light p-0">
-      <div class="topbar container">
+      <form action="{% url 'shop:product_list' %}" method="get" class="amz-search-form" role="search">
+        <input type="text" name="q" class="amz-search-input" placeholder="Search FUNNELWEB" value="{{ request.GET.q|default:'' }}" aria-label="Search">
+        <button type="submit" class="amz-search-btn" aria-label="Search">🔍</button>
+      </form>
 
-        <!-- left: brand + search + hamburger -->
-        <div class="brand-row">
-
-          <a href="{% url 'shop:product_list' %}" class="logo">🛒FUNNELWEB</a>
-
-          <form action="{% url 'shop:product_list' %}" method="get" class="search" role="search" aria-label="Site search">
-            <input name="q" placeholder="Search for shoes  , jackets, watches..." value="{{ request.GET.q|default:'' }}" aria-label="Search">
-            <button type="submit" aria-label="Search" class="nav-link" style="border-radius:999px;background:transparent;padding:6px 8px;"></button>
-          </form>
-
-          <!-- Hamburger button (ONLY mobile/tablet) -->
-          <button class="navbar-toggler d-lg-none ms-auto" type="button"
-                  data-bs-toggle="collapse" data-bs-target="#mainNavbar"
-                  aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-
-        </div>
-
-        <!-- right: nav actions -->
-        <div class="collapse navbar-collapse" id="mainNavbar">
-          <nav class="nav-actions ms-lg-auto mt-3 mt-lg-0" role="navigation" aria-label="Top navigation">
-
-            {% with path=request.path %}
-              {% if path == "/" %}
-
-                <div class="dropdown" id="top-categories">
-                  <button class="dropdown-toggle" id="catToggle">
-                    Categories
-                  </button>
-
-                  <ul class="dropdown-menu" id="categories-menu">
-                    <li>
-                      <a href="{% url 'shop:product_list' %}">All</a>
-                    </li>
-                    <!-- JS will inject categories here -->
-                  </ul>
-                </div>
-
-              {% else %}
-                <a href="{% url 'shop:product_list' %}" class="nav-link">
-                  Home
-                </a>
-              {% endif %}
-            {% endwith %}
-
-            {% if user.is_authenticated and not user.is_staff %}
-              <a href="{% url 'shop:cart' %}" class="nav-tab nav-cart">
-                🛒 Cart
-              </a>
-            {% endif %}
-
-            <a href="{% url 'shop:offers' %}" class="nav-link offers-pill">Offers</a>
-
-            {% if user.is_authenticated %}
-
-              {% if user.is_authenticated and not user.is_staff %}
-                <a href="{% url 'shop:dashboard' %}" class="nav-tab">Dashboard</a>
-              {% endif %}
-
-              {% if user.is_staff %}
-                <a href="{% url 'admin:index' %}" class="nav-link">Admin</a>
-              {% endif %}
-
-              <a href="{% url 'shop:logout' %}" class="nav-link">Logout</a>
-
-            {% else %}
-              <a href="{% url 'shop:login' %}" class="nav-btn nav-btn-login">Login</a>
-            {% endif %}
-
-          </nav>
-        </div>
-
+      <div class="amz-nav-links">
+        {% if user.is_authenticated %}
+          <a href="{% url 'shop:dashboard' %}" class="amz-nav-item">
+            <small>Hello, {{ user.first_name|default:user.username }}</small>
+            <strong>Account & Lists</strong>
+          </a>
+          {% if not user.is_staff %}
+            <a href="{% url 'shop:user_orders' %}" class="amz-nav-item">
+              <small>Returns</small>
+              <strong>& Orders</strong>
+            </a>
+            <a href="{% url 'shop:cart' %}" class="amz-cart">
+              <span>🛒</span> Cart
+            </a>
+          {% else %}
+            <a href="{% url 'admin:index' %}" class="amz-nav-item">
+              <small>Manage</small>
+              <strong>Admin Panel</strong>
+            </a>
+          {% endif %}
+          <a href="{% url 'shop:logout' %}" class="amz-nav-item">
+            <small>Securely</small>
+            <strong>Sign Out</strong>
+          </a>
+        {% else %}
+          <a href="{% url 'shop:login' %}" class="amz-nav-item">
+            <small>Hello, sign in</small>
+            <strong>Account & Lists</strong>
+          </a>
+          <a href="{% url 'shop:user_orders' %}" class="amz-nav-item">
+            <small>Returns</small>
+            <strong>& Orders</strong>
+          </a>
+          <a href="{% url 'shop:cart' %}" class="amz-cart">
+            <span>🛒</span> Cart
+          </a>
+        {% endif %}
       </div>
-    </nav>
+    </div>
+
+    <div class="amz-bottom-row">
+      <div class="container d-flex align-items-center" style="gap: 16px; overflow-x: auto; white-space: nowrap;">
+        <div class="dropdown" id="top-categories">
+          <button type="button" class="dropdown-toggle" id="catToggle">
+            ☰ All Categories
+          </button>
+          <ul class="dropdown-menu" id="categories-menu">
+            <li><a href="{% url 'shop:product_list' %}">All Products</a></li>
+            <!-- JS will inject categories here -->
+          </ul>
+        </div>
+        
+        <a href="{% url 'shop:offers' %}" class="amz-bottom-link">Today's Deals</a>
+        <a href="{% url 'shop:contact' %}" class="amz-bottom-link">Customer Service</a>
+        <a href="{% url 'shop:register' %}" class="amz-bottom-link">Register</a>
+        {% if request.path != "/" %}
+          <a href="{% url 'shop:product_list' %}" class="amz-bottom-link">Home</a>
+        {% endif %}
+      </div>
+    </div>
 
     {% block hero %}{% endblock %}
   </header>

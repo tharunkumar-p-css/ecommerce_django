@@ -1,0 +1,305 @@
+{% extends 'shop/base_shell.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'shop/product_story.css' %}">
+{% endblock %}
+
+{% block content %}
+<article class="product-page">
+  <div class="product-media-stage">
+    <div class="product-media-top">
+      <span class="product-inline-chip">{% if product.available %}Available now{% else %}Currently unavailable{% endif %}</span>
+      {% if product.has_offer %}
+        <span class="product-inline-chip product-inline-chip--accent">Deal live</span>
+      {% endif %}
+    </div>
+
+    <div class="product-media-card">
+      {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+      {% else %}
+        <img src="{% static 'shop/placeholder.png' %}" alt="No image available">
+      {% endif %}
+    </div>
+
+    <div class="product-media-benefits">
+      <article class="media-benefit">
+        <strong>Secure checkout</strong>
+        <span>Card, UPI, crypto, and COD supported.</span>
+      </article>
+      <article class="media-benefit">
+        <strong>Easy returns</strong>
+        <span>Customer-friendly return and exchange window.</span>
+      </article>
+      <article class="media-benefit">
+        <strong>Track orders</strong>
+        <span>Post-purchase status stays visible in your account.</span>
+      </article>
+    </div>
+
+    {% if product.variant_group %}
+      <div class="variant-box">
+        <div class="variant-title">Available colors</div>
+        <div class="variant-grid">
+          <a href="{{ product.get_absolute_url }}" class="variant-card active">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" alt="{{ product.color|default:'Current product' }}">
+            {% else %}
+              <img src="{% static 'shop/placeholder.png' %}" alt="No image available">
+            {% endif %}
+            <p>{{ product.color|default:"Current" }}</p>
+          </a>
+
+          {% for v in variants %}
+            <a href="{{ v.get_absolute_url }}" class="variant-card">
+              {% if v.image %}
+                <img src="{{ v.image.url }}" alt="{{ v.color|default:'Variant' }}">
+              {% else %}
+                <img src="{% static 'shop/placeholder.png' %}" alt="No image available">
+              {% endif %}
+              <p>{{ v.color|default:"Variant" }}</p>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="product-info">
+    <div class="product-kicker-row">
+      <span class="product-kicker">{{ product.category.name }}</span>
+      <span class="product-inline-chip">{% if total_reviews %}{{ total_reviews }} review{{ total_reviews|pluralize }}{% else %}New listing{% endif %}</span>
+    </div>
+
+    <h1>{{ product.name }}</h1>
+
+    <div class="product-rating-summary">
+      <span class="product-rating-stars">
+        {% with avg=avg_rating|floatformat:0 %}
+          {% for i in "12345"|slice:avg %}&#9733;{% endfor %}
+        {% endwith %}
+      </span>
+      <span>{{ avg_rating }} average rating</span>
+      <span>{{ total_reviews }} customer review{{ total_reviews|pluralize }}</span>
+    </div>
+
+    <p class="product-subcopy">A cleaner product detail page with stronger trust cues, clearer pricing, and a more purchase-focused layout.</p>
+
+    <div class="price-row">
+      {% if product.has_offer %}
+        <div class="price-big">Rs. {{ product.get_display_price }}</div>
+        <div class="strike">Rs. {{ product.price }}</div>
+        <div class="discount-badge">{{ product.discount_percent }}% off</div>
+      {% else %}
+        <div class="price-big">Rs. {{ product.price }}</div>
+      {% endif %}
+    </div>
+
+    <div class="product-highlights">
+      <div class="highlight-card">
+        <span>Category</span>
+        <strong>{{ product.category.name }}</strong>
+      </div>
+      <div class="highlight-card">
+        <span>Status</span>
+        <strong>{% if product.available %}Available now{% else %}Unavailable{% endif %}</strong>
+      </div>
+      <div class="highlight-card">
+        <span>Returns</span>
+        <strong>7-day support</strong>
+      </div>
+      <div class="highlight-card">
+        <span>Payments</span>
+        <strong>Card, UPI, COD</strong>
+      </div>
+      <div class="highlight-card">
+        <span>Reviews</span>
+        <strong>{{ total_reviews }} total</strong>
+      </div>
+    </div>
+
+    <section class="purchase-panel">
+      <div class="purchase-panel__head">
+        <span>Purchase options</span>
+        <strong>Select quantity, choose a size if needed, and continue to cart or checkout.</strong>
+      </div>
+
+      {% if user.is_authenticated and user.is_staff %}
+        <p class="admin-warning">Admin accounts can inspect products but cannot place customer orders.</p>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-outline">Back to catalog</a>
+      {% else %}
+        <form method="post">
+          {% csrf_token %}
+          <div class="inline-fields">
+            <div class="field">
+              <label>Quantity</label>
+              {{ form.quantity }}
+            </div>
+            {% if form.size %}
+              <div class="field">
+                <label>Size</label>
+                {{ form.size }}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="action-row">
+            <button type="submit" class="btn btn-primary" formaction="{% url 'shop:buy_now' product.id %}" formmethod="post">Buy now</button>
+            <button type="submit" class="btn btn-secondary" formaction="{% url 'shop:add_to_cart' product.id %}" formmethod="post">Add to cart</button>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-outline">Back</a>
+          </div>
+
+          <div class="purchase-assurance">
+            <span>Trusted checkout</span>
+            <span>Live order tracking</span>
+            <span>Easy returns</span>
+          </div>
+        </form>
+      {% endif %}
+    </section>
+
+    <section class="desc-block">
+      <div class="section-heading">
+        <div class="product-kicker">About this item</div>
+        <h2>Product overview</h2>
+      </div>
+      <p class="desc">{{ product.description|linebreaksbr }}</p>
+    </section>
+
+    <div class="alert-box">
+      <button id="priceAlertBtn" class="btn btn-outline">Notify me on price drop</button>
+      <span id="alertStatus" class="small muted"></span>
+    </div>
+  </div>
+</article>
+
+<section class="reco-section">
+  <div class="section-heading">
+    <div class="product-kicker">More from this aisle</div>
+    <h2>You might also like</h2>
+  </div>
+
+  <div class="reco-grid">
+    {% for p in product.category.products.all|slice:":5" %}
+      {% if p.id != product.id %}
+        <article class="reco-card">
+          {% if p.image %}
+            <img src="{{ p.image.url }}" alt="{{ p.name }}">
+          {% else %}
+            <img src="{% static 'shop/placeholder.png' %}" alt="No image available">
+          {% endif %}
+          <div class="reco-name">{{ p.name }}</div>
+          <div class="reco-price">Rs. {{ p.get_display_price }}</div>
+          <a href="{{ p.get_absolute_url }}" class="btn btn-outline">View</a>
+        </article>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<section class="review-section">
+  <div class="section-heading">
+    <div class="product-kicker">Customer signal</div>
+    <h2>Reviews and ratings</h2>
+  </div>
+
+  <div class="review-header">
+    <div class="avg-box">
+      <h3>{{ avg_rating }} / 5</h3>
+      <div class="avg-stars">
+        {% with avg=avg_rating|floatformat:0 %}
+          {% for i in "12345"|slice:avg %}&#9733;{% endfor %}
+        {% endwith %}
+      </div>
+      <p>{{ total_reviews }} verified opinion{{ total_reviews|pluralize }}</p>
+    </div>
+
+    <div class="review-bars">
+      {% for row in rating_rows %}
+        <div class="bar-row">
+          <span>{{ row.star }} star</span>
+          <div class="bar">
+            <div class="bar-fill" style="width: {{ row.percent }}%;"></div>
+          </div>
+          <span class="percent">{{ row.percent|floatformat:0 }}%</span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if user.is_authenticated %}
+    <form method="post" class="review-form">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="review">
+      <div class="review-row">
+        <input type="text" name="comment_text" placeholder="Share fit, quality, or delivery experience" required>
+        <button type="submit">Post review</button>
+      </div>
+
+      <div class="rating-input">
+        <input type="radio" id="star1" name="rating" value="1" required>
+        <label for="star1">&#9733;</label>
+        <input type="radio" id="star2" name="rating" value="2">
+        <label for="star2">&#9733;</label>
+        <input type="radio" id="star3" name="rating" value="3">
+        <label for="star3">&#9733;</label>
+        <input type="radio" id="star4" name="rating" value="4">
+        <label for="star4">&#9733;</label>
+        <input type="radio" id="star5" name="rating" value="5">
+        <label for="star5">&#9733;</label>
+      </div>
+    </form>
+  {% else %}
+    <p class="muted">Sign in to leave a review.</p>
+  {% endif %}
+
+  <div class="review-list">
+    {% for comment in comments %}
+      <article class="review-card">
+        <div class="review-top">
+          <div>
+            <div class="review-user">{{ comment.user.email }}</div>
+            <div class="review-date">{{ comment.created_at|date:"M d, Y" }}</div>
+          </div>
+          <div class="review-stars">
+            {% for star in star_range %}
+              {% if star <= comment.rating %}&#9733;{% endif %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <p>{{ comment.text }}</p>
+
+        {% if user == comment.user %}
+          <form method="post" action="{% url 'shop:delete_comment' comment.id %}">
+            {% csrf_token %}
+            <button type="submit" class="delete-review-btn">Delete review</button>
+          </form>
+        {% endif %}
+      </article>
+    {% empty %}
+      <div class="review-empty">
+        <h3>No reviews yet</h3>
+        <p>Be the first customer to leave feedback for this product.</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<script>
+  const alertButton = document.getElementById('priceAlertBtn');
+  const alertStatus = document.getElementById('alertStatus');
+  const productKey = 'price_alert_{{ product.id }}';
+  const currentPrice = {{ product.get_display_price }};
+
+  if (alertButton) {
+    alertButton.addEventListener('click', function () {
+      localStorage.setItem(productKey, currentPrice);
+      alertStatus.textContent = 'Price alert saved. We will keep this item on your radar.';
+      alertButton.disabled = true;
+      alertButton.style.opacity = '0.7';
+    });
+  }
+</script>
+{% endblock %}

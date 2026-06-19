@@ -1,219 +1,333 @@
-{% extends "shop/base.html" %}
+{% extends "shop/base_shell.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'shop/user_orders.css' %}">
+{% endblock %}
+
 {% block content %}
-
-<style>
-.orders-wrap {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 0 16px;
-}
-
-.order-card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 18px;
-  margin-bottom: 18px;
-}
-
-.order-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.order-id { font-weight: 700; font-size: 16px; }
-.order-date { color: #6b7280; font-size: 13px; }
-
-.status {
-  font-size: 12px;
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-/* STATUS COLORS */
-.pending { background:#fee2e2; color:#991b1b; }
-.shipped { background:#e0f2fe; color:#075985; }
-.completed { background:#dcfce7; color:#166534; }
-.cancelled { background:#fef3c7; color:#92400e; }
-.return_requested { background:#e0e7ff; color:#3730a3; }
-.returned { background:#ede9fe; color:#5b21b6; }
-.refunded { background:#cffafe; color:#155e75; }
-.exchange_requested { background:#cffafe; color:#155e75; }
-.exchanged { background:#ecfeff; color:#0f766e; }
-
-.actions {
-  margin-top: 14px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.btn {
-  padding: 7px 14px;
-  font-size: 13px;
-  border-radius: 6px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-cancel { background:#dc2626; color:#fff; }
-.btn-return { background:#2563eb; color:#fff; }
-.btn-exchange { background:#059669; color:#fff; }
-
-.btn-disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.days-left {
-  font-size: 12px;
-  color: #2563eb;
-}
-
-/* POPUPS */
-.popup-overlay {
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.5);
-  z-index:1000;
-}
-
-.popup-box {
-  background:#fff;
-  width:400px;
-  margin:120px auto;
-  padding:20px;
-  border-radius:10px;
-}
-</style>
-
-<div class="orders-wrap">
-  <h2>My Orders</h2>
-
-  {% for order in orders %}
-  <div class="order-card">
-
-    <div class="order-head">
-      <div>
-        <div class="order-id">Order #{{ order.id }}</div>
-        <div class="order-date">{{ order.created_at|date:"d M Y" }}</div>
-      </div>
-
-      <div class="status {{ order.order_status|lower }}">
-        {{ order.order_status }}
-      </div>
+<div class="orders-page">
+  <section class="orders-overview">
+    <div class="orders-overview__copy">
+      <div class="orders-overview__eyebrow">Account orders</div>
+      <h1>Track purchases the way a real ecommerce dashboard should.</h1>
+      <p>
+        Follow delivery progress, review item details, and manage returns or exchanges
+        from a cleaner post-purchase experience.
+      </p>
     </div>
 
-    <ul>
-      {% for item in order.items.all %}
-        <li>{{ item.product.name }}</li>
+    <div class="orders-overview__stats">
+      <article class="overview-stat">
+        <span>Total orders</span>
+        <strong>{{ summary.total }}</strong>
+        <p>Every order tied to your account.</p>
+      </article>
+
+      <article class="overview-stat">
+        <span>Active</span>
+        <strong>{{ summary.active }}</strong>
+        <p>Pending confirmation or currently in transit.</p>
+      </article>
+
+      <article class="overview-stat">
+        <span>Delivered</span>
+        <strong>{{ summary.delivered }}</strong>
+        <p>Completed or successfully exchanged orders.</p>
+      </article>
+
+      <article class="overview-stat">
+        <span>Support cases</span>
+        <strong>{{ summary.support }}</strong>
+        <p>Returns, refunds, or exchange requests in motion.</p>
+      </article>
+    </div>
+  </section>
+
+  {% if messages %}
+    <div class="orders-messages">
+      {% for message in messages %}
+        <div class="orders-message orders-message--{{ message.tags|default:'info' }}">
+          {{ message }}
+        </div>
       {% endfor %}
-    </ul>
-
-    <div class="actions">
-
-      <!-- CANCEL -->
-      {% if order.order_status == 'PENDING' %}
-      <form method="post" action="{% url 'shop:cancel_order' order.id %}">
-        {% csrf_token %}
-        <button class="btn btn-cancel">Cancel Order</button>
-      </form>
-      {% endif %}
-
-      <!-- RETURN + EXCHANGE -->
-      {% if order.order_status == 'COMPLETED' %}
-        {% if order.can_return %}
-          <button type="button"
-                  class="btn btn-return"
-                  onclick="openReturn('{{ order.id }}')">
-            Return Order
-          </button>
-
-          <button type="button"
-                  class="btn btn-exchange"
-                  onclick="openExchange('{{ order.id }}')">
-            Exchange Order
-          </button>
-
-          <div class="days-left">
-            {{ order.return_days_left }} day{{ order.return_days_left|pluralize }} left
-          </div>
-        {% else %}
-          <button class="btn btn-return btn-disabled" disabled>
-            Return / Exchange Expired
-          </button>
-        {% endif %}
-      {% endif %}
-
     </div>
-  </div>
-  {% endfor %}
+  {% endif %}
+
+  {% if orders %}
+    <section class="orders-list">
+      {% for order in orders %}
+        <article class="order-card" data-status="{{ order.status_key }}">
+          <header class="order-card__header">
+            <div class="order-card__identity">
+              <div class="order-card__label-row">
+                <span class="order-card__index">#{{ forloop.counter }}</span>
+                <span class="order-card__label">Order record</span>
+              </div>
+
+              <h2>Order #{{ order.id }}</h2>
+
+              <div class="order-card__meta">
+                <span>Placed {{ order.created_at|date:"d M Y" }}</span>
+                <span>{{ order.item_count }} item{{ order.item_count|pluralize }}</span>
+                <span>{{ order.get_payment_method_display }}</span>
+              </div>
+            </div>
+
+            <div class="order-card__summary">
+              <div class="order-status" data-status="{{ order.status_key }}">
+                {{ order.get_order_status_display }}
+              </div>
+              <div class="order-card__amount">
+                <span>Order total</span>
+                <strong>Rs. {{ order.order_total }}</strong>
+              </div>
+            </div>
+          </header>
+
+          <section class="order-progress">
+            <div class="order-progress__top">
+              <div>
+                <h3>{{ order.status_label }}</h3>
+                <p>{{ order.status_note }}</p>
+              </div>
+              <span>{{ order.progress_value }}%</span>
+            </div>
+
+            <div class="order-progress__track">
+              <span style="width: {{ order.progress_value }}%;"></span>
+            </div>
+          </section>
+
+          <div class="order-card__content">
+            <section class="order-items">
+              <div class="order-section-title">Items in this order</div>
+
+              <div class="order-item-list">
+                {% for item in order.line_items %}
+                  <article class="order-item">
+                    <div class="order-item__media">
+                      {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                      {% else %}
+                        <img src="{% static 'shop/placeholder.png' %}" alt="No image available">
+                      {% endif %}
+                    </div>
+
+                    <div class="order-item__copy">
+                      <h3>{{ item.product.name }}</h3>
+                      <p>
+                        {{ item.product.category.name }}
+                        {% if item.size %}
+                          <span>Size {{ item.size }}</span>
+                        {% endif %}
+                      </p>
+                    </div>
+
+                    <div class="order-item__qty">
+                      <span>Quantity</span>
+                      <strong>{{ item.quantity }}</strong>
+                    </div>
+
+                    <div class="order-item__price">
+                      <span>Unit price</span>
+                      <strong>Rs. {{ item.price }}</strong>
+                    </div>
+                  </article>
+                {% endfor %}
+              </div>
+            </section>
+
+            <aside class="order-side">
+              <section class="order-side__card">
+                <div class="order-section-title">Delivery details</div>
+                <h3>{{ order.name }}</h3>
+                <p>{{ order.address }}</p>
+                {% if order.phone_number %}
+                  <div class="order-side__meta">{{ order.phone_number }}</div>
+                {% endif %}
+                <div class="order-side__meta">{{ order.email }}</div>
+              </section>
+
+              <section class="order-side__card">
+                <div class="order-section-title">Payment snapshot</div>
+                <div class="order-chip-row">
+                  <span class="order-chip">{{ order.get_payment_method_display }}</span>
+                  <span class="order-chip {% if order.paid %}order-chip--paid{% else %}order-chip--pending{% endif %}">
+                    {% if order.paid %}Paid{% else %}Pay on delivery{% endif %}
+                  </span>
+                  <span class="order-chip">{{ order.get_payment_status_display }}</span>
+                  {% if order.refund_status != 'NOT_REFUNDED' %}
+                    <span class="order-chip">{{ order.get_refund_status_display }}</span>
+                  {% endif %}
+                </div>
+
+                {% if order.order_status == 'COMPLETED' and order.can_return %}
+                  <p class="order-support-note">
+                    Return or exchange available for {{ order.return_days_left }} day{{ order.return_days_left|pluralize }}.
+                  </p>
+                {% elif order.order_status == 'RETURN_REQUESTED' and order.return_reason %}
+                  <p class="order-support-note">Return reason: {{ order.return_reason }}</p>
+                {% elif order.order_status == 'EXCHANGE_REQUESTED' %}
+                  <p class="order-support-note">
+                    Exchange requested for {{ order.exchange_product }}.
+                    {% if order.exchange_reason %} {{ order.exchange_reason }}{% endif %}
+                  </p>
+                {% elif order.order_status == 'REFUNDED' %}
+                  <p class="order-support-note">Refund completed for this order.</p>
+                {% else %}
+                  <p class="order-support-note">Need help later? This order will stay here with its latest status updates.</p>
+                {% endif %}
+              </section>
+            </aside>
+          </div>
+
+          <footer class="order-card__footer">
+            <div class="order-card__footer-note">
+              {% if order.order_status == 'PENDING' %}
+                You can still cancel this order before fulfillment begins.
+              {% elif order.order_status == 'SHIPPED' %}
+                The package is on the move and will update here as soon as delivery is completed.
+              {% elif order.order_status == 'COMPLETED' %}
+                Delivered successfully. Post-delivery actions are available from the controls on the right.
+              {% else %}
+                This order remains in your history with all service activity attached.
+              {% endif %}
+            </div>
+
+            <div class="order-actions">
+              {% if order.order_status == 'PENDING' %}
+                <form method="post" action="{% url 'shop:cancel_order' order.id %}">
+                  {% csrf_token %}
+                  <button class="order-btn order-btn--danger" type="submit">Cancel order</button>
+                </form>
+              {% endif %}
+
+              {% if order.order_status == 'COMPLETED' %}
+                {% if order.can_return %}
+                  <button type="button" class="order-btn order-btn--primary" onclick="openReturn('{{ order.id }}')">
+                    Request return
+                  </button>
+                  <button type="button" class="order-btn order-btn--secondary" onclick="openExchange('{{ order.id }}')">
+                    Request exchange
+                  </button>
+                {% else %}
+                  <button class="order-btn order-btn--muted" disabled>
+                    Return window closed
+                  </button>
+                {% endif %}
+              {% endif %}
+            </div>
+          </footer>
+        </article>
+      {% endfor %}
+    </section>
+  {% else %}
+    <section class="orders-empty">
+      <h2>No orders yet</h2>
+      <p>
+        Once you place your first order, this page becomes your purchase history with delivery,
+        payment, and support updates.
+      </p>
+      <a href="{% url 'shop:product_list' %}" class="order-btn order-btn--primary">Start shopping</a>
+    </section>
+  {% endif %}
 </div>
 
-<!-- RETURN POPUP -->
-<div id="returnPopup" class="popup-overlay">
-  <div class="popup-box">
-    <h3>Return Order</h3>
-    <form method="post" id="returnForm">
+<div id="returnPopup" class="order-modal">
+  <div class="order-modal__dialog">
+    <div class="order-modal__head">
+      <div>
+        <div class="order-section-title">After-sales support</div>
+        <h3>Return request</h3>
+        <p>Tell us what happened so the review can be processed faster.</p>
+      </div>
+      <button type="button" class="order-modal__close" onclick="closeAll()" aria-label="Close">X</button>
+    </div>
+
+    <form method="post" id="returnForm" class="order-modal__form">
       {% csrf_token %}
-      <textarea name="reason" required
-                placeholder="Reason for return"
-                style="width:100%;height:80px;"></textarea>
-      <div style="margin-top:14px;text-align:right;">
-        <button type="button" onclick="closeAll()">Cancel</button>
-        <button type="submit" class="btn btn-return">Submit</button>
+      <label class="order-modal__field">
+        <span>Reason for return</span>
+        <textarea name="reason" required placeholder="Example: wrong size, damaged item, or product quality issue"></textarea>
+      </label>
+
+      <div class="order-modal__actions">
+        <button type="button" class="order-btn order-btn--muted" onclick="closeAll()">Cancel</button>
+        <button type="submit" class="order-btn order-btn--primary">Submit return</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- EXCHANGE POPUP -->
-<div id="exchangePopup" class="popup-overlay">
-  <div class="popup-box">
-    <h3>Exchange Order</h3>
-    <form method="post" id="exchangeForm">
+<div id="exchangePopup" class="order-modal">
+  <div class="order-modal__dialog">
+    <div class="order-modal__head">
+      <div>
+        <div class="order-section-title">After-sales support</div>
+        <h3>Exchange request</h3>
+        <p>Share the replacement details so the exchange can be reviewed correctly.</p>
+      </div>
+      <button type="button" class="order-modal__close" onclick="closeAll()" aria-label="Close">X</button>
+    </div>
+
+    <form method="post" id="exchangeForm" class="order-modal__form">
       {% csrf_token %}
-      <textarea name="reason" required
-                placeholder="Reason for exchange"
-                style="width:100%;height:60px;"></textarea>
+      <label class="order-modal__field">
+        <span>Reason for exchange</span>
+        <textarea name="reason" required placeholder="Example: need another size or color"></textarea>
+      </label>
 
-      <input type="text" name="new_product" required
-             placeholder="New product (size / color / model)"
-             style="width:100%;margin-top:10px;">
+      <label class="order-modal__field">
+        <span>Requested replacement</span>
+        <input type="text" name="new_product" required placeholder="Product name, size, color, or model">
+      </label>
 
-      <div style="margin-top:14px;text-align:right;">
-        <button type="button" onclick="closeAll()">Cancel</button>
-        <button type="submit" class="btn btn-exchange">Submit</button>
+      <div class="order-modal__actions">
+        <button type="button" class="order-btn order-btn--muted" onclick="closeAll()">Cancel</button>
+        <button type="submit" class="order-btn order-btn--secondary">Submit exchange</button>
       </div>
     </form>
   </div>
 </div>
 
 <script>
-function openReturn(orderId) {
-  var popup = document.getElementById("returnPopup");
-  var form = document.getElementById("returnForm");
+  const returnRouteTemplate = "{% url 'shop:return_order' 0 %}";
+  const exchangeRouteTemplate = "{% url 'shop:exchange_order' 0 %}";
 
-  form.action = "/order/" + orderId + "/return/";
-  popup.style.display = "block";
-}
+  function buildOrderActionUrl(routeTemplate, orderId) {
+    return routeTemplate.replace('/0/', '/' + orderId + '/');
+  }
 
-function openExchange(orderId) {
-  var popup = document.getElementById("exchangePopup");
-  var form = document.getElementById("exchangeForm");
+  function openReturn(orderId) {
+    var popup = document.getElementById("returnPopup");
+    var form = document.getElementById("returnForm");
+    form.action = buildOrderActionUrl(returnRouteTemplate, orderId);
+    popup.style.display = "block";
+  }
 
-  form.action = "/order/" + orderId + "/exchange/";
-  popup.style.display = "block";
-}
+  function openExchange(orderId) {
+    var popup = document.getElementById("exchangePopup");
+    var form = document.getElementById("exchangeForm");
+    form.action = buildOrderActionUrl(exchangeRouteTemplate, orderId);
+    popup.style.display = "block";
+  }
 
-function closeAll() {
-  document.getElementById("returnPopup").style.display = "none";
-  document.getElementById("exchangePopup").style.display = "none";
-}
+  function closeAll() {
+    document.getElementById("returnPopup").style.display = "none";
+    document.getElementById("exchangePopup").style.display = "none";
+  }
+
+  window.addEventListener("click", function (event) {
+    if (event.target.classList.contains("order-modal")) {
+      closeAll();
+    }
+  });
+
+  window.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      closeAll();
+    }
+  });
 </script>
 {% endblock %}

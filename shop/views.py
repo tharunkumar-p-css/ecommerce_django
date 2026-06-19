@@ -20,6 +20,7 @@ from .forms import (
 from .models import ProductComment
 from django.db.models import Avg, Count
 from django.conf import settings
+from .models import Product, Category, Order, Profile
 
 
 
@@ -94,7 +95,7 @@ def product_list(request, category_slug=None):
         end_date__gte=now
     ).order_by('-created_at')
 
-    return render(request, 'shop/product_list.html', {
+    return render(request, 'shop/catalog.html', {
         'category': category,
         'categories': categories,
         'products': products,
@@ -130,7 +131,7 @@ def offers_list(request):
     else:
         products = products.order_by('-created_at')
 
-    return render(request, 'shop/product_list.html', {
+    return render(request, 'shop/catalog.html', {
         'categories': categories,
         'products': products,
         'offers_page': True,
@@ -147,6 +148,12 @@ def offers_list(request):
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug, available=True)
 
+
+    variants = Product.objects.filter(
+        variant_group=product.variant_group,
+        available=True
+    ).exclude(id=product.id)
+    
     # ================= QUICK VIEW =================
     if request.method == "GET" and request.GET.get("quick"):
         return render(request, "shop/_product_quick.html", {"product": product})
@@ -230,8 +237,9 @@ def product_detail(request, slug):
     })
 
 # ================= FINAL RENDER =================
-    return render(request, "shop/product_detail.html", {
+    return render(request, "shop/product_story.html", {
     "product": product,
+    "variants":variants,
     "form": form,
     "comments": comments,
     "rating_rows": rating_rows,
@@ -269,7 +277,7 @@ def cart_view(request):
         for item in items
     )
 
-    return render(request, 'shop/cart.html', {
+    return render(request, 'shop/cart_showcase.html', {
         'items': items,
         'total': total
     })
@@ -292,6 +300,8 @@ def checkout(request):
         request.session.create()
 
     session_key = request.session.session_key
+
+    profile, created = Profile.objects.get_or_create(user=request.user)
 
     # ================= BUY NOW LOGIC =================
     buy_now_product_id = request.session.get("buy_now_product_id")
@@ -332,6 +342,10 @@ def checkout(request):
 
         if form.is_valid():
             order = form.save(commit=False)
+            # Update profile automatically
+            profile.address = order.address
+            profile.phone_number = order.phone_number
+            profile.save()
 
             if request.user.is_authenticated:
                 order.user = request.user
@@ -378,9 +392,9 @@ def checkout(request):
                 OrderItem.objects.create(
                     order=order,
                     product=product,
-                    quantity=1,
+                    quantity=buy_now_qty,
                     price=product.get_display_price(),
-                    size=None
+                    size=buy_now_size
                 )
 
                 # Clear buy now session after order
@@ -404,11 +418,18 @@ def checkout(request):
                 f"{reverse('shop:product_list')}?order=1&paid={'1' if order.paid else '0'}"
             )
 
+    form = CheckoutForm(initial={
+    "name": request.user.get_full_name(),
+    "email": request.user.email,
+    "address": profile.address,
+    "phone_number": profile.phone_number,
+})
+
     return render(request, "shop/checkout.html", {
-        "form": CheckoutForm(),
-        "items": items,
-        "total": total,
-    })
+    "form": form,
+    "items": items,
+    "total": total,
+})
 # ================= UPI QR CODE =================
 
 def upi_qr(request):
@@ -565,26 +586,120 @@ def register_view(request):
         messages.success(request, "Registration successful. Please login.")
         return redirect("shop:login")
 
-    return render(request, "shop/register.html")
+    return render(request, "shop/register.html", {
+        "social_login_enabled": settings.SOCIAL_LOGIN_ENABLED,
+    })
 def user_logout(request):
     logout(request)
     return redirect('shop:product_list')
+
 @login_required
 def user_dashboard(request):
-    # safety: admin should not use user dashboard
+
+    # Prevent admin access
     if request.user.is_staff:
         return redirect('admin:index')
 
-    return render(request, 'shop/user_dashboard.html')
+    # Get or create profile
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    # Save form data
+    if request.method == "POST":
+
+        profile.address = request.POST.get("address")
+        profile.phone_number = request.POST.get("phone_number")
+        profile.save()
+
+        request.user.first_name = request.POST.get("name")
+        request.user.email = request.POST.get("email")
+        request.user.save()
+
+    return render(request, 'shop/dashboard_studio.html', {
+        'profile': profile
+    })
 # ================= USER ORDERS =================
 
 @login_required
 def user_orders(request):
-    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    orders = list(
+        Order.objects.filter(user=request.user)
+        .prefetch_related('items__product')
+        .order_by('-created_at')
+    )
 
     now = timezone.now()
+    summary = {
+        'total': len(orders),
+        'active': 0,
+        'delivered': 0,
+        'support': 0,
+    }
+    status_meta = {
+        'PENDING': {
+            'label': 'Awaiting confirmation',
+            'note': 'Your order has been received and is waiting for final confirmation.',
+            'progress': 16,
+        },
+        'SHIPPED': {
+            'label': 'In transit',
+            'note': 'Your package has left the warehouse and is moving through delivery.',
+            'progress': 68,
+        },
+        'COMPLETED': {
+            'label': 'Delivered',
+            'note': 'Delivered successfully. You can still request support within the return window.',
+            'progress': 100,
+        },
+        'CANCELLED': {
+            'label': 'Cancelled',
+            'note': 'This order was cancelled before fulfillment.',
+            'progress': 100,
+        },
+        'RETURN_REQUESTED': {
+            'label': 'Return under review',
+            'note': 'Your return request was submitted and is being reviewed by support.',
+            'progress': 100,
+        },
+        'RETURNED': {
+            'label': 'Returned',
+            'note': 'The order has been returned successfully.',
+            'progress': 100,
+        },
+        'REFUNDED': {
+            'label': 'Refund completed',
+            'note': 'The refund has been processed for this order.',
+            'progress': 100,
+        },
+        'EXCHANGE_REQUESTED': {
+            'label': 'Exchange under review',
+            'note': 'Your exchange request has been received and is being processed.',
+            'progress': 100,
+        },
+        'EXCHANGED': {
+            'label': 'Exchanged',
+            'note': 'A replacement order has been completed for this request.',
+            'progress': 100,
+        },
+    }
 
     for order in orders:
+        line_items = list(order.items.all())
+        order.line_items = line_items
+        order.item_count = sum(item.quantity for item in line_items)
+        order.order_total = sum(
+            Decimal(str(item.price)) * item.quantity
+            for item in line_items
+        )
+        order.status_key = order.order_status.lower()
+        meta = status_meta.get(order.order_status, {
+            'label': order.get_order_status_display(),
+            'note': 'Order status updated.',
+            'progress': 50,
+        })
+        order.status_label = meta['label']
+        order.status_note = meta['note']
+        order.progress_value = meta['progress']
+
         order.return_days_left = 0
         order.can_return = False
 
@@ -596,8 +711,21 @@ def user_orders(request):
                 order.return_days_left = max(remaining, 1)
                 order.can_return = True
 
+        if order.order_status in {'PENDING', 'SHIPPED'}:
+            summary['active'] += 1
+        if order.order_status in {'COMPLETED', 'EXCHANGED'}:
+            summary['delivered'] += 1
+        if order.order_status in {
+            'RETURN_REQUESTED',
+            'RETURNED',
+            'REFUNDED',
+            'EXCHANGE_REQUESTED',
+        }:
+            summary['support'] += 1
+
     return render(request, 'shop/user_orders.html', {
-        'orders': orders
+        'orders': orders,
+        'summary': summary,
     })
 
 

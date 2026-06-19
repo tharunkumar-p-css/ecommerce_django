@@ -48,4 +48,4 @@ class AddToCartForm(forms.Form):
 class CheckoutForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ["name", "email", "address"]
+        fields = ["name", "email", "address","phone_number"]

@@ -20,6 +20,8 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "price",
+        "color",
+        "variant_group",
         "offer_price",
         "is_on_offer",
         "available",
@@ -75,7 +77,7 @@ class OrderAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ("Customer Information", {
-            "fields": ("user", "name", "email", "address")
+            "fields": ("user", "name", "email", "phone_number", "address")
         }),
         ("Order / Return / Exchange", {
             "fields": (
@@ -226,4 +228,4 @@ class CartItemAdmin(admin.ModelAdmin):
 @admin.register(ProductComment)
 class ProductCommentAdmin(admin.ModelAdmin):
     list_display = ("product", "user", "created_at")
-    search_fields = ("product_name", "user_username", "text")
+    search_fields = ("product__name", "user__username", "text")

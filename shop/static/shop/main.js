@@ -7,28 +7,49 @@ document.addEventListener('DOMContentLoaded', function () {
   const quickModal = document.getElementById('quick-view');
   const quickContent = document.getElementById('quick-view-content');
 
-  function openCart(){cartDrawer.classList.add('open');overlay.classList.add('active');}
-  function closeCart(){cartDrawer.classList.remove('open');overlay.classList.remove('active');}
+  function openCart() {
+    if (!cartDrawer || !overlay) return;
+    cartDrawer.classList.add('open');
+    overlay.classList.add('active');
+  }
 
-  if(openCartBtn) openCartBtn.onclick=e=>{e.preventDefault();openCart();};
-  if(closeCartBtn) closeCartBtn.onclick=closeCart;
-  overlay.onclick=closeCart;
+  function closeLayers() {
+    if (cartDrawer) cartDrawer.classList.remove('open');
+    if (quickModal) quickModal.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
+  }
 
-  quickButtons.forEach(btn=>{
-    btn.addEventListener('click',async()=>{
-      const slug=btn.dataset.slug;
-      const res=await fetch(/product/${slug}/?quick=1);
-      const html=await res.text();
-      quickContent.innerHTML=html;
+  if (openCartBtn) {
+    openCartBtn.onclick = function (event) {
+      event.preventDefault();
+      openCart();
+    };
+  }
+
+  if (closeCartBtn) closeCartBtn.onclick = closeLayers;
+  if (overlay) overlay.onclick = closeLayers;
+
+  quickButtons.forEach(function (button) {
+    button.addEventListener('click', async function () {
+      if (!quickModal || !quickContent || !overlay) return;
+
+      const slug = button.dataset.slug;
+      const response = await fetch(`/product/${slug}/?quick=1`);
+      const html = await response.text();
+
+      quickContent.innerHTML = html;
       quickModal.classList.add('open');
       overlay.classList.add('active');
     });
   });
 
-  document.querySelectorAll('[data-close]').forEach(el=>{
-    el.onclick=()=>{
-      quickModal.classList.remove('open');
-      overlay.classList.remove('active');
-    };
+  document.querySelectorAll('[data-close]').forEach(function (element) {
+    element.onclick = closeLayers;
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      closeLayers();
+    }
   });
 });

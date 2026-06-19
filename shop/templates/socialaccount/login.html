@@ -1,0 +1,178 @@
+{% extends "shop/base_shell.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+<style>
+body{
+  background: linear-gradient(180deg,#f6f7f9,#eef2ff);
+}
+
+.social-wrap{
+  max-width: 520px;
+  margin: 90px auto;
+  padding: 0 16px;
+}
+
+.social-card{
+  background: #fff;
+  border-radius: 22px;
+  padding: 36px 34px;
+  box-shadow: 0 20px 55px rgba(0,0,0,0.12);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  position: relative;
+}
+
+.social-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at top left, rgba(59,130,246,.18), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(236,72,153,.14), transparent 55%);
+  pointer-events:none;
+}
+
+.social-head{
+  position: relative;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.social-logo{
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.10);
+}
+
+.social-logo img{
+  width: 26px;
+  height: 26px;
+}
+
+.social-title{
+  font-size: 22px;
+  font-weight: 1000;
+  margin: 0 0 6px;
+  color: #0f172a;
+}
+
+.social-sub{
+  margin: 0;
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.social-actions{
+  position: relative;
+  margin-top: 22px;
+  display: grid;
+  gap: 12px;
+}
+
+.social-btn{
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 15px;
+  transition: 0.2s ease;
+}
+
+.social-btn-primary{
+  background: linear-gradient(135deg,#111827,#334155);
+  color: #fff;
+}
+
+.social-btn-primary:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 18px 35px rgba(0,0,0,0.18);
+}
+
+.social-btn-outline{
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  color: #111827;
+  text-decoration: none;
+  text-align: center;
+}
+
+.social-btn-outline:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+}
+
+.note{
+  position: relative;
+  margin-top: 18px;
+  font-size: 12px;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px){
+  .social-wrap{
+    margin: 55px auto;
+  }
+  .social-card{
+    padding: 26px 18px;
+    border-radius: 18px;
+  }
+  .social-title{
+    font-size: 20px;
+  }
+}
+</style>
+
+<div class="social-wrap">
+  <div class="social-card">
+
+    <div class="social-head">
+      <div class="social-logo">
+        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+      </div>
+
+      <h2 class="social-title">Continue with Google</h2>
+
+      <p class="social-sub">
+        You are about to sign in using your Google account.<br>
+        Click continue to finish login.
+      </p>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="social-actions">
+
+        <button type="submit" class="social-btn social-btn-primary">
+          Continue
+        </button>
+
+        <a href="{% url 'shop:register' %}" class="social-btn social-btn-outline">
+          Back to Register
+        </a>
+
+      </div>
+    </form>
+
+    <div class="note">
+      🔒 Your login is secure. We never see your Google password.
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
